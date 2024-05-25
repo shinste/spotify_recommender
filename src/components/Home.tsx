@@ -11,15 +11,16 @@ const Home: React.FC = () => {
     const [topArtists, setTopArtists] = useState<any[]>([]);
     const [topSongs, setTopSongs] = useState<any[]>([]);
     const [savedSongs, setSavedSongs] = useState<any[]>([]);
-    const [seedSongs, setSeedSongs] = useState<{[key: string]: string}>({});
-    const [seedArtists, setSeedArtists] = useState<{[key: string]: string}>({});
+
     const [seedImages, setSeedImages] = useState<{[key: string]: [string, string]}>({});
     const [selected, setSelected] = useState('All');
     const [searchArtists, setSearchArtists] = useState<any[]>([]);
     const [searchSongs, setSearchSongs] = useState<any[]>([]);
     const [mute, setMute] = useState(false)
-    
     const [recommended, setRecommended] = useState<any[]>([]);
+    const [positions, setPositions] = useState<{[key: string]: string[]}>({"imageDrop1": [], "imageDrop2": [], "imageDrop3": [], "imageDrop4": [], "imageDrop5": []});
+    const [allIds, setAllIds] = useState<string[]>([]);
+    const [order, setOrder] = useState<string[]>(["imageDrop1", "imageDrop2", "imageDrop3", "imageDrop4", "imageDrop5"])
 
     useEffect(() => {
         const hash = window.location.hash;
@@ -80,11 +81,8 @@ const Home: React.FC = () => {
     function handleDrag(e: React.DragEvent, id: string, title: string, type: string, image: string) {
         e.dataTransfer.setData('title', title);
         e.dataTransfer.setData('image', image);
-        if (type === "artist") {
-            e.dataTransfer.setData('artistId', id);
-        } else if (type === "track") {
-            e.dataTransfer.setData('songId', id);
-        }
+        e.dataTransfer.setData('id', id);
+        e.dataTransfer.setData('type', type);
     }
 
     const handleDragOver = (e: React.DragEvent) => {
@@ -95,99 +93,51 @@ const Home: React.FC = () => {
         
         const seedTitle = e.dataTransfer.getData('title') as string;
         
-        if (seedTitle) {
-            const seedSongId = e.dataTransfer.getData('songId') as string;
-            const imageUrl = e.dataTransfer.getData('image') as string;
-            const imageSpot = document.getElementById(spot) as HTMLImageElement;
-            console.log(seedTitle, imageSpot);
-            if (!seedSongId) {
-                const seedArtistId = e.dataTransfer.getData('artistId') as string
-                if (!Object.keys(seedArtists).includes(seedArtistId)) {
-                    console.log('dupe');
-                    if (imageSpot) {
-                        if (imageSpot.src) {
-                            const existingImageData = seedImages[imageSpot.src];
-                            if (existingImageData) {
-                                const [removingId, removingType] = existingImageData;
-                                if (removingType === "artist") {
-                                    const newArtists = Object.fromEntries(
-                                        Object.entries(seedArtists).filter(([key, value]) => key !== removingId)
-                                    );
-                                    setSeedArtists({...newArtists, [seedArtistId]: seedTitle})
-                                } else {
-                                    const newSongs = Object.fromEntries(
-                                        Object.entries(seedSongs).filter(([key, value]) => key !== removingId)
-                                    );
-                                    setSeedSongs(newSongs);
-                                }
-                                const { [imageSpot.src]: _, ...newObject } = seedImages;
-                                setSeedImages(newObject);
-                            } 
-                        } else {
-                            setSeedArtists({...seedArtists, [seedArtistId]: seedTitle})
-                        }
-                        imageSpot.src =  imageUrl;
-                    }
-                    if (!Object.keys(seedImages).includes(imageUrl)) {
-                        setSeedImages((prevImages) => ({
-                            ...prevImages,
-                            [imageUrl]: [seedArtistId, 'artist'], // Ensure this is a tuple
-                          }));
-                    }
+        const seedId = e.dataTransfer.getData('id') as string;
+        const imageUrl = e.dataTransfer.getData('image') as string;
+        const type = e.dataTransfer.getData('type') as string;
+        const imageSpot = document.getElementById(spot) as HTMLImageElement;
+        console.log(seedTitle, imageSpot);
+        let newPositions = {...positions};
+        let newIds = [...allIds]
+        if (!allIds.includes(seedId)) {
+            console.log('not a dupe');
+            if (imageSpot) {
+                if (positions[spot].length > 0) {
+                    newIds = allIds.filter((value) => value !== positions[spot][0]);
+                    newPositions = Object.fromEntries(
+                        Object.entries(positions).map(([key, value]) => 
+                            key === spot ? [key, []] : [key, value]
+                        )
+                    );
                     
                 }
-            } else {
-                if (!Object.keys(seedSongs).includes(seedSongId)) {
-                    console.log('yes its adding');
-                    if (imageSpot) {
-                        if (imageSpot.src) {
-                            const source = imageSpot.src
-                            const [removingId, removingType] = seedImages[source];
-                            if (removingType === "artist") {
-                                const newArtists = Object.fromEntries(
-                                    Object.entries(seedArtists).filter(([key, value]) => key !== removingId)
-                                );
-                                setSeedArtists(newArtists);
-                            } else {
-                                const newSongs = Object.fromEntries(
-                                    Object.entries(seedSongs).filter(([key, value]) => key !== removingId)
-                                );
-                                setSeedSongs({...newSongs, [seedSongId]: seedTitle})
-                            }
-                            const { [imageSpot.src]: _, ...newObject } = seedImages;
-                            setSeedImages(newObject);
-                        } else {
-                            setSeedSongs({...seedSongs, [seedSongId]: seedTitle})
-                        }
-                        
-                        imageSpot.src =  imageUrl;
-                    }
-                if (!Object.keys(seedImages).includes(imageUrl)) {
-                    setSeedImages((prevImages) => ({
-                        ...prevImages,
-                        [imageUrl]: [seedSongId, 'track'], // Ensure this is a tuple
-                        }));
-                }
-                }
+                setPositions(Object.fromEntries(
+                    Object.entries(newPositions).map(([key, value]) => 
+                        key === spot ? [key, [imageUrl, seedId, type, seedTitle]] : [key, value]
+                    )
+                ));
             }
+            setAllIds([...newIds, seedId]);
         }
         
     }
 
     const recommend = async () => {
-        // topSongs.forEach((song, index) => {trackSeed.push(song.id)
-        //     console.log(song.id);
-        // })
-        // topArtists.forEach((artist, index) => {artistSeed.push(artist.id)})
-        // console.log(trackSeed, artistSeed, 'seeds');
+        const seedSongs = Object.entries(positions).map(([key, value]) => 
+            value[2] === "track" && value[1]).filter(Boolean);
+        
+        const seedArtists = Object.entries(positions).map(([key, value]) => 
+            value[2] === "artist" && value[1]).filter(Boolean);
+        console.log(positions, 'seed songs');
         try {
             const {data} = await axios.get('https://api.spotify.com/v1/recommendations', {
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
                 params: {
-                    seed_tracks: Object.keys(seedSongs).join(','),
-                    seed_artists: Object.keys(seedArtists).join(','),
+                    seed_tracks: seedSongs.join(','),
+                    seed_artists: seedArtists.join(','),
                     limit: 10
                 }
             })
@@ -198,6 +148,16 @@ const Home: React.FC = () => {
             console.log(error);
         }
     };
+
+    const handleLeft = () => {
+        setOrder((prevOrder) => {
+            const newPositions = [...prevOrder];
+            const first = newPositions.shift();
+            newPositions.push(String(first));
+            console.log(newPositions, 'rotatedpositions');
+            return newPositions;
+        });
+    }
 
     if (!token) {
         return (
@@ -214,28 +174,22 @@ const Home: React.FC = () => {
                     <div className="Vertical-flex" style={{overflowY: 'auto'}}>
                     </div>
                     <div className="Flex">
-                        <div onDrop={(e) => handleDrop(e, "imageDrop1")} onDragOver={handleDragOver} style={{width: '100px', height: '100px', backgroundColor: 'white', border: 'black solid'}}>
-                            <img id="imageDrop1" style={{width: '100%'}}/>
-                        </div>
-                        <div onDrop={(e) => handleDrop(e, "imageDrop2")} onDragOver={handleDragOver} style={{width: '100px', height: '100px', backgroundColor: 'white', border: 'black solid'}}>
-                            <img id="imageDrop2" style={{width: '100%'}}/>
-                        </div>
-                        <div onDrop={(e) => handleDrop(e, "imageDrop3")} onDragOver={handleDragOver} style={{width: '100px', height: '100px', backgroundColor: 'white', border: 'black solid'}}>
-                            <img id="imageDrop3" style={{width: '100%'}}/>
-                        </div>
-                        <div onDrop={(e) => handleDrop(e, "imageDrop4")} onDragOver={handleDragOver} style={{width: '100px', height: '100px', backgroundColor: 'white', border: 'black solid'}}>
-                            <img id="imageDrop4" style={{width: '100%'}}/>  
-                        </div>
-                        <div onDrop={(e) => handleDrop(e, "imageDrop5")} onDragOver={handleDragOver} style={{width: '100px', height: '100px', backgroundColor: 'white', border: 'black solid'}}>
-                            <img id="imageDrop5" style={{width: '100%', height: '100%'}}/>  
-                        </div>
+                        <button onClick={handleLeft}>left</button>
+                        {order.map((position, index) => {
+                            return (
+                                <div onClick={() => console.log}onDrop={(e) => handleDrop(e, position)} onDragOver={handleDragOver} style={{width: '100px', height: '100px', backgroundColor: 'white', border: 'black solid'}}>
+                                    <img id={position} style={{width: '100%'}} src={positions[position].length > 0 ? positions[position][0] : undefined}/>
+                                </div>
+                            );
+                        })}
+                        <button>right</button>
                     </div>
                     
                 </div>
                 <button onClick={recommend} className="py-3 px-4 gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-purple-600 text-white hover:bg-purple-700 ">
                     Create Recommendation
                 </button>
-                <button onClick={() => console.log(seedSongs)}></button>
+                <button onClick={() => console.log(positions)}></button>
             </div>
             <Select setSelected={setSelected} selected={selected}/>
             {selected === "Search" && 
