@@ -11,8 +11,6 @@ const Home: React.FC = () => {
     const [topArtists, setTopArtists] = useState<any[]>([]);
     const [topSongs, setTopSongs] = useState<any[]>([]);
     const [savedSongs, setSavedSongs] = useState<any[]>([]);
-
-    const [seedImages, setSeedImages] = useState<{[key: string]: [string, string]}>({});
     const [selected, setSelected] = useState('All');
     const [searchArtists, setSearchArtists] = useState<any[]>([]);
     const [searchSongs, setSearchSongs] = useState<any[]>([]);
