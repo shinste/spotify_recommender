@@ -5,6 +5,7 @@ import Display from "./Display";
 import Select from "./Select";
 import Search from "./Search";
 
+// Home Component
 const Home: React.FC = () => {
 
     const [token, setToken] = useState('');
