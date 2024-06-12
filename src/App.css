@@ -101,7 +101,6 @@ h1 {
   padding-top: 15px;
   padding-left: 10px;
   margin-right: 40px;
-  /* transition: transform 0.3s ease; */
   transition: transform 300ms;
   height: 290px;
 }
@@ -143,3 +142,137 @@ h1 {
   bottom: 0;
 }
 
+#Main-display {
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+}
+
+.Vertical-center {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.display0 {
+  background-color: #97FABC;
+  height: 100px;
+  width: 100px;
+  border: white solid;
+  margin-right: -25px; 
+  position: absolute;
+  transition: all 10s;
+
+}
+
+.display1 {
+  background-color: #BDA5F6;
+  height: 120px;
+  width: 120px;
+  border: white solid;
+  margin-right: -20px; 
+  z-index: 1;
+  position: absolute;
+  transition: all 10s ease;
+}
+
+.display2 {
+  background-color: #98FBF3;
+  height: 150px;
+  width: 150px;
+  border: white solid;
+  justify-content: flex-end;
+  z-index: 2;
+  position: absolute;
+  transition: all 10s ease;
+}
+
+.display3 {
+  background-color: #EFFCA7;
+  height: 120px;
+  width: 120px;
+  border: white solid;
+  justify-content: flex-end;
+  margin-left: -20px;
+  z-index: 1;
+  position: absolute;
+  transition: all 10s ease;
+}
+
+.display4 {
+  background-color: #F0AEBD;
+  height: 100px;
+  width: 100px;
+  border: white solid;
+  margin-left: -25px;
+  position: absolute;
+  transition: all 10s linear;
+}
+
+.Hover-div{
+  position: relative;
+}
+
+.Button-hover {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  display: flex;
+}
+
+#Right-button {
+  position: absolute;
+  right: 30%;
+  top: 50%;
+  z-index: 3;
+}
+
+#Left-button {
+  position: absolute;
+  left: 30%;
+  top: 50%;
+  z-index: 3;
+}
+
+.Volume-button{
+  margin-top: 20px;
+  width: 30px;
+  background-color: grey;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.pressed {
+  background-color: #afb1b3; /* Pressed background color */
+  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.2);
+  transform: translateY(1px);
+}
+
+.Pop-up {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.Pop-up .Pop-up-text {
+  visibility: hidden;
+  width: 160px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -80px;
+}
+
+.Pop-up .show {
+  visibility: visible;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s
+}

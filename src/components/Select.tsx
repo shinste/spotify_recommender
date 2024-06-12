@@ -11,7 +11,6 @@ const Select: React.FC<SelectProps> = ({selected, setSelected}) => {
             <option value="Top">Your Top Artists</option>
             <option value="Saved">Saved Songs</option>
             <option value="Search">Search</option>
-            <option value="Recommended">Recommended</option>
         </select> 
     );
 }
