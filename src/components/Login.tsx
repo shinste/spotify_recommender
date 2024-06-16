@@ -7,7 +7,7 @@ const Login = () => {
     const TYPE = "token";
     return (
         <div>
-            <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${TYPE}&scope=user-top-read,user-library-read,user-read-private,user-read-email,playlist-read-private`}>Login to Spotify</a>
+            <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${TYPE}&scope=user-top-read,user-library-read,user-read-private,user-read-email,playlist-read-private,playlist-modify-public,playlist-modify-private`}>Login to Spotify</a>
         </div>
     );
 };

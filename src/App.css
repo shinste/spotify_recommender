@@ -250,29 +250,97 @@ h1 {
   transform: translateY(1px);
 }
 
-.Pop-up {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-}
-
-.Pop-up .Pop-up-text {
-  visibility: hidden;
-  width: 160px;
-  background-color: #555;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 8px 0;
+.Playlist-div {
   position: absolute;
-  z-index: 1;
-  bottom: 125%;
+  top: 50%;
   left: 50%;
-  margin-left: -80px;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  z-index: 10;
+  height: 60vh;
+  width: 30vw;
+  background-color: gray;
+  padding: 20px;
+  border-radius: 12px;
+  overflow-y: auto;
 }
 
-.Pop-up .show {
-  visibility: visible;
-  -webkit-animation: fadeIn 1s;
-  animation: fadeIn 1s
+.Playlist-img {
+  height: 90px;
+  width: 90px;
+  margin: 10px;
+}
+
+.Playlist-content {
+  font-weight: bold;
+  display: flex;
+}
+
+.Playlist-name {
+  color: white;
+  font-weight: bold;
+  margin-bottom: 3px;
+}
+
+.Playlist-button {
+  background-color: transparent;
+  width: 100%;
+  border: none;
+}
+.Playlist-button:hover {
+  background-color: rgb(122, 122, 122);
+}
+
+.Playlist-button:active {
+  background-color: rgb(59, 55, 55);
+  outline: none;
+}
+
+#dismiss-alert {
+  position: absolute;
+  bottom: 3%;
+  right: 3%;
+  z-index: 10;
+}
+
+#dismiss-notification {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  z-index: 10;
+  width: fit-content;
+  color: white;
+}
+
+.dismissButton {
+  height: 25px;
+}
+
+.Hover-button {
+  width: 30px;
+  height: 30px;
+}
+
+#volume-button {
+  width: 15px;
+  height: 15px;
+}
+
+#Unavailable {
+  text-align: center;
+  color: red;
+  margin: 0;
+}
+
+#Recommendation-div {
+  width: 100%;
+  height: auto;
+  background-color: #D9D9D9;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  box-shadow: 1px 1px gray;
+  padding: 3px;
+  border-radius: 12px;
 }

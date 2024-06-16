@@ -14,7 +14,6 @@ const Search: React.FC<DisplayProps> = ({spotifyAPI, setSearchSongs, setSearchAr
         if (e.key === 'Enter') {
             spotifyAPI('search', {q: searchKey,limit: 10,type: searchCategory}, searchCategory === "track" ? setSearchSongs : setSearchArtists);
         }
-        
     }
     return (
         <div className="Flex" style={{marginBottom: '10px'}}>
