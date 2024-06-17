@@ -124,6 +124,7 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
             </div>
             <div id={reference} className="Display-container" >
                 {showcase && showcase.map((item, index) => {
+                    console.log(item, 'display item check');
                     if (title === "Saved Songs") {
                         item = item.track;
                     }
