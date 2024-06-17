@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo} from 'react';
 import { useState, useRef } from 'react';
 import Playlist from '../icons/playlist.png'
 import Add from '../icons/add.png'
@@ -17,7 +17,7 @@ interface DisplayProps {
     handleAdd: (id: string, title: string, type: string, url: string) => void;
 }
     
-const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, mute, handleButtonClick, handleDrag, handleAdd}) => {
+const Display: React.FC<DisplayProps> = React.memo(({ showcase, title, reference, setMute, mute, handleButtonClick, handleDrag, handleAdd}) => {
     const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
     const divRefs = useRef<(HTMLDivElement | null)[]>([]);
     const [errors, setError] = useState<string[]>([]);
@@ -124,10 +124,10 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
             </div>
             <div id={reference} className="Display-container" >
                 {showcase && showcase.map((item, index) => {
-                    console.log(item, 'display item check');
-                    if (title === "Saved Songs") {
-                        item = item.track;
+                    if (title === "Saved Songs" || item.added_at) {
+                        item = item.track; 
                     }
+                    console.log(item, 'check display');
                     let songTitle = "";
                     if (item.type === "track") {
                         songTitle = item.name + ' by ' + item.artists[0].name;
@@ -192,6 +192,6 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
             </div>
     </div>
     );
-}
+});
 
 export default Display;
