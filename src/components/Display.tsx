@@ -112,7 +112,7 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                 currentAudio.volume = .05;
             }
         }
-    }, [mute, currentAudio])
+    }, [])
 
     return (
         <div className="Most-played">   
