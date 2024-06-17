@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo} from 'react';
+import React, { useEffect, useCallback} from 'react';
 import { useState, useRef } from 'react';
 import Playlist from '../icons/playlist.png'
 import Add from '../icons/add.png'
@@ -17,7 +17,7 @@ interface DisplayProps {
     handleAdd: (id: string, title: string, type: string, url: string) => void;
 }
     
-const Display: React.FC<DisplayProps> = React.memo(({ showcase, title, reference, setMute, mute, handleButtonClick, handleDrag, handleAdd}) => {
+const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, mute, handleButtonClick, handleDrag, handleAdd}) => {
     const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
     const divRefs = useRef<(HTMLDivElement | null)[]>([]);
     const [errors, setError] = useState<string[]>([]);
@@ -39,7 +39,7 @@ const Display: React.FC<DisplayProps> = React.memo(({ showcase, title, reference
         }   
     }
 
-    const handlePreview = (url: string, divHover: HTMLElement | null) => {
+    const handlePreview = useCallback((url: string, divHover: HTMLElement | null) => {
         const audioPlayer = document.getElementById(url) as HTMLAudioElement;
         let hoverTimer: NodeJS.Timeout | null = null;
         if (audioPlayer === null) {
@@ -83,7 +83,7 @@ const Display: React.FC<DisplayProps> = React.memo(({ showcase, title, reference
                 audioPlayer.pause();
             }
         });
-    }
+    }, [currentAudio, mute]);
 
     const handleHover = (identifier: string, status: boolean) => {
         const removeButton = document.getElementById('Add-' + identifier);
@@ -192,6 +192,6 @@ const Display: React.FC<DisplayProps> = React.memo(({ showcase, title, reference
             </div>
     </div>
     );
-});
+};
 
 export default Display;
