@@ -1,7 +1,7 @@
 
 const Login = () => {
     const CLIENT_ID = "65fc2d5eaa7d475f8dd7bf2b7c98c515";
-    const REDIRECT_URI = "http://localhost:3000"
+    const REDIRECT_URI = "https://master--spotifysongrecommender.netlify.app"
     // const CLIENT_SECRET = "40bf45f1b9034f9880b372823d64cea4";
     const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
     const TYPE = "token";
@@ -28,11 +28,11 @@ const Login = () => {
                 <div id="Disclaimer">
                         <h5 className="mt-0"style={{fontSize: '25px'}}>What is being authorized on my account?</h5>
                         <p>There are a couple of permission that are essential to creating the optimal experience while using this application.
-                        This includes permission to view data about your profile, playlists, most popular songs and artists, and etc. 
+                        This includes permission to view data about your profile, playlists, most popular songs and artists, and many more. 
                         Most of the use of Spotify's API for your account is intended to strictly view data, and the only featur that would make
                         changes to your account would be the ability to add chosen songs to the playlists you have in your library. The link to 
-                        the left will send you to Spotify's authorization disclaimer page that will go more into detail before you fully allow this 
-                        application to access account data.
+                        the left will send you to Spotify's authorization disclaimer page that will provide a list of information that your account 
+                        will provide.
                         </p>
                     </div>
 
