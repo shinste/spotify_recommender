@@ -160,8 +160,8 @@ const Recommendation: React.FC<RecommendationProps> = ({token, order, setOrder, 
                     }
                 </div>
         </div>
-        <button onClick={() => {setAllIds([]);
-                                setPositions({"imageDrop1": {}, "imageDrop2": {}, "imageDrop3": {}, "imageDrop4": {}, "imageDrop5": {}})}}>Clear Seed Songs/Artists</button>
+        {recommended.length > 0 && <button onClick={() => {setAllIds([]);
+                                                           setPositions({"imageDrop1": {}, "imageDrop2": {}, "imageDrop3": {}, "imageDrop4": {}, "imageDrop5": {}})}}>Clear Seed Songs/Artists</button>}
         {recommended.length === 0 && 
             <button onClick={recommend} className="py-3 px-4 gap-x-2 mb-5 text-sm font-semibold rounded-lg border border-transparent bg-purple-600 text-white hover:bg-purple-700">
                 Create Recommendation

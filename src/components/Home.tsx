@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef} from "react"
 import axios from 'axios';
-import Homepage from "./Login";
+import Login from "./Login";
 import Display from "./Display";
 import Select from "./Select";
 import Search from "./Search";
@@ -194,7 +194,7 @@ const Home: React.FC = () => {
 
     if (!token) {
         return (
-            <Homepage/>
+            <Login/>
         )
     }
     return (
@@ -210,7 +210,7 @@ const Home: React.FC = () => {
                     <button className="ml-3 dismissButton" onClick={() => setSuccess('')}>X</button>
                 </div>}
             <Playlists name={name} playlistDivRef={playlistDivRef} playlists={playlists} personal={personal} handleSendPlaylist={handleSendPlaylist}/>
-            <h1>TITLE</h1>
+            <h1>SPOTIFY RECOMMENDER</h1>
             <Recommendation token={token} order={order} setOrder={setOrder} allIds={allIds} positions={positions} setPositions={setPositions} setAllIds={setAllIds} recommended={recommended} setRecommended={setRecommended} setSelected={setSelected} mute={mute} setMute={setMute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd} />
             <Select setSelected={setSelected} selected={selected}/>
             {selected === "Search" && 
