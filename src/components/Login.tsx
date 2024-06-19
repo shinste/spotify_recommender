@@ -1,8 +1,8 @@
 
 const Login = () => {
     const CLIENT_ID = "65fc2d5eaa7d475f8dd7bf2b7c98c515";
-    const REDIRECT_URI = "https://master--spotifysongrecommender.netlify.app"
-    // const REDIRECT_URI = "http://localhost:3000"
+    // const REDIRECT_URI = "https://master--spotifysongrecommender.netlify.app"
+    const REDIRECT_URI = "http://localhost:3000"
 
     const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
     const TYPE = "token";

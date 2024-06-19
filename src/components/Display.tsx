@@ -36,7 +36,7 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                 container.scrollTo({
                     left: container.scrollLeft - scrollAmount,
                     behavior: 'smooth'
-                }); 
+                });  
             }
         }   
     }
@@ -49,6 +49,7 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
         } else {
             divHover?.addEventListener('mouseenter', () => {
             hoverTimer = setTimeout(() => {
+
                 if (audioPlayer !== currentAudio) {
                     currentAudio?.pause();
                 }
@@ -59,14 +60,18 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                 }
                 
                 setCurrentAudio(audioPlayer);
-                const playing = audioPlayer.play();
-                if (playing !== undefined) {
-                    playing.then(_ => {
-                      })
-                      .catch(error => {
-                        setError([...errors, error])
-                        console.log(error);
-                      });
+                var isPlaying = audioPlayer.currentTime > 0 && !audioPlayer.paused && !audioPlayer.ended && audioPlayer.readyState > audioPlayer.HAVE_CURRENT_DATA;
+                if (!isPlaying) {
+                    const playing = audioPlayer.play();
+                    if (playing !== undefined) {
+                        playing.then(_ => {
+                        })
+                        .catch(error => {
+                            setError([...errors, error])
+                            console.log(error);
+                        });
+                }
+                
                 }
                 
             }, 1000);
@@ -83,7 +88,7 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                 audioPlayer.pause();
             }
         });
-    }, [errors, currentAudio]);
+    }, [errors, currentAudio, mute]);
 
     const handleHover = useCallback((identifier: string, status: boolean) => {
         const removeButton = document.getElementById('Add-' + identifier);
@@ -116,7 +121,7 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                 currentAudio.volume = .05;
             }
         }
-    }, [])
+    }, [mute])
 
     return (
         <div className="Most-played">   
