@@ -396,9 +396,10 @@ h1 {
   height: 230px;
   margin-left: 50px;
   border-radius: 12px;
-  padding: 80px;
+  padding: 30px;
   color: white;
   margin-top: -900px;
+  font-size: 20px;
 }
 
 #Sign-in{
@@ -409,6 +410,14 @@ h1 {
   color: whitesmoke;
   font-size: 29px;
   border-radius: 12px;
+}
+
+#Sign-in:hover{
+  background-color: #219c4c;
+}
+
+#Sign-in:active{
+  background-color: #1a783b;
 }
 
 .No-hover{
@@ -423,6 +432,6 @@ h1 {
   margin-bottom: 300px;
   margin-left: auto;
   border-radius: 12px;
-  margin-top: 0px;
+  margin-top: -80px;
   /* position: absolute; */
 }

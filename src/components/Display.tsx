@@ -4,6 +4,7 @@ import Playlist from '../icons/playlist.png'
 import Add from '../icons/add.png'
 import Audio from '../icons/audio.png'
 import Mute from '../icons/mute.png'
+import Tooltip from '@mui/material/Tooltip';
 
 
 interface DisplayProps {
@@ -50,7 +51,6 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                 if (audioPlayer !== currentAudio) {
                     currentAudio?.pause();
                 }
-                
                 if (!mute) {
                     audioPlayer.volume = .05;
                 } else {
@@ -61,7 +61,6 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                 const playing = audioPlayer.play();
                 if (playing !== undefined) {
                     playing.then(_ => {
-                        console.log('yay it worked');
                       })
                       .catch(error => {
                         setError([...errors, error])
@@ -83,9 +82,9 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                 audioPlayer.pause();
             }
         });
-    }, [currentAudio, mute]);
+    }, [errors, currentAudio]);
 
-    const handleHover = (identifier: string, status: boolean) => {
+    const handleHover = useCallback((identifier: string, status: boolean) => {
         const removeButton = document.getElementById('Add-' + identifier);
         const playlistButton = document.getElementById('Playlist-below-' + identifier);
         const volumeButton = document.getElementById('Volume-' + identifier);
@@ -98,7 +97,11 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
         if (volumeButton) {
             volumeButton.hidden = status;
         }
-    }
+    }, []);
+
+    const memoizedHandleAdd = useCallback((id: string, title: string, type: string, url: string) => {
+        handleAdd(id, title, type, url);
+    }, [handleAdd]);
 
     useEffect(() => {
         if (mute) {
@@ -122,12 +125,11 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                 <button className='Scroll-button' onClick={() => scrollContent('right')}>&gt;</button>
                 
             </div>
-            <div id={reference} className="Display-container" >
+            <div key={reference} className="Display-container" >
                 {showcase && showcase.map((item, index) => {
                     if (title === "Saved Songs" || item.added_at) {
                         item = item.track; 
                     }
-                    console.log(item, 'check display');
                     let songTitle = "";
                     if (item.type === "track") {
                         songTitle = item.name + ' by ' + item.artists[0].name;
@@ -148,17 +150,25 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                                     <img src={item.album.images[0].url} className="Display-img" alt=""/>
                                     <div className="Button-hover" style={{flexDirection: 'column'}}>
                                         <div className='Flex'>
-                                            <button id={'Add-' + title + String(index)}hidden style={{marginRight: '15px', backgroundColor: 'grey'}} onClick={() => handleAdd(item.id, item.name, item.type, item.album.images[0].url)}>
-                                                <img src={Add} className="Hover-button" alt=""/>
-                                            </button>
-                                            <button onClick={(e) => handleButtonClick(item.uri, e, item.name)} id={'Playlist-below-' + title + String(index)} hidden style={{marginLeft: title !== 'Recommended Songs' ? '15px' : 0, backgroundColor: 'grey'}} >
-                                                <img src={Playlist} className="Hover-button" alt=""/>
-                                            </button>
-                                            
+                                            <Tooltip title="Add to Selection">
+                                                <button id={'Add-' + title + String(index)} hidden className="hs-tooltip-toggle" style={{marginRight: '15px', backgroundColor: 'grey'}} onClick={() => memoizedHandleAdd(item.id, item.name, item.type, item.album.images[0].url)}>
+                                                    <img src={Add} className="Hover-button" alt=""/>
+                                                    <span className="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 transition-opacity inline-block absolute invisible z-10 py-1 px-2 bg-gray-900 text-xs font-medium text-white rounded shadow-sm dark:bg-neutral-700" role="tooltip">
+                                                        Tooltip on top
+                                                    </span>
+                                                </button>
+                                            </Tooltip>
+                                            <Tooltip title="Add Track to Playlist">
+                                                <button onClick={(e) => handleButtonClick(item.uri, e, item.name)} id={'Playlist-below-' + title + String(index)} hidden style={{marginLeft: title !== 'Recommended Songs' ? '15px' : 0, backgroundColor: 'grey'}} >
+                                                    <img src={Playlist} className="Hover-button" alt=""/>
+                                                </button>
+                                            </Tooltip>
                                         </div>
-                                        <button id={'Volume-' + title + String(index)} onClick={() => setMute(!mute)} hidden className='Volume-button'>
-                                            <img id="volume-button" src={mute ? Mute : Audio} alt=""/>
-                                        </button>
+                                        <Tooltip title="Toggle Preview">
+                                            <button id={'Volume-' + title + String(index)} onClick={() => setMute(!mute)} hidden className='Volume-button'>
+                                                <img id="volume-button" src={mute ? Mute : Audio} alt=""/>
+                                            </button>
+                                        </Tooltip>
                                     </div>
                                     <div className="Display-p">
                                         <p style={{marginBottom: 0}}>{songTitle}</p>
@@ -176,9 +186,11 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                                 >
                                     <img src={item.images[0].url} className="Display-img" alt=""/>
                                     <div className="Button-hover">
-                                        <button id={'Add-' + title + String(index)}hidden style={{backgroundColor: 'grey'}} onClick={() => handleAdd(item.id, item.name, item.type, item.images[0].url)}>
+                                    <Tooltip title="Add to Selection">
+                                        <button id={'Add-' + title + String(index)}hidden style={{backgroundColor: 'grey'}} onClick={() => memoizedHandleAdd(item.id, item.name, item.type, item.images[0].url)}>
                                             <img src={Add} className='Hover-button' alt=""/>
                                         </button>
+                                    </Tooltip>
                                     </div>
                                     <div className="Display-p">
                                         <p>{item.name}</p>
@@ -186,7 +198,6 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                                 </div>
                             }
                         </div>
-                        
                     );
                 })}
             </div>

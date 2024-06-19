@@ -7,6 +7,7 @@ import Search from "./Search";
 import Recommendation from "./Recommendation";
 import Playlists from "./Playlists";
 
+
 // Home Component
 const Home: React.FC = () => {
 
