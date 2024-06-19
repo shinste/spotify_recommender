@@ -22,6 +22,7 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
     const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
     const divRefs = useRef<(HTMLDivElement | null)[]>([]);
     const [errors, setError] = useState<string[]>([]);
+
     function scrollContent(direction: string) {
         const container = document.querySelector('#' + reference);
         if (container) {
@@ -125,7 +126,7 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                 <button className='Scroll-button' onClick={() => scrollContent('right')}>&gt;</button>
                 
             </div>
-            <div key={reference} className="Display-container" >
+            <div id={reference} className="Display-container" >
                 {showcase && showcase.map((item, index) => {
                     if (title === "Saved Songs" || item.added_at) {
                         item = item.track; 
