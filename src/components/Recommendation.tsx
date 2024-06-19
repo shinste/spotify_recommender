@@ -135,7 +135,7 @@ const Recommendation: React.FC<RecommendationProps> = ({token, order, setOrder, 
                     {order.map((position, index) => {
                         return (
                             <div onMouseEnter={() => handleHover(index, false)} onMouseLeave={() => handleHover(index, true)} className={'display' + String(index) + " Vertical-center Hover-div"} onDrop={(e) => handleDrop(e, position)} onDragOver={handleDragOver}>
-                                <img id={position} style={{width: '100%'}} src={Object.keys(positions[position]).length > 0 ? positions[position].url : undefined} alt=""/>
+                                <img id={position} className='Recommend-img' src={Object.keys(positions[position]).length > 0 ? positions[position].url : undefined} alt=""/>
                                 {allIds.length === 0 && index === 2 && 
                                             <div>
                                                 Drag or manually add songs/tracks here!
