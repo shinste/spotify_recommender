@@ -387,13 +387,14 @@ h1 {
 #Disclaimer{
   background-color: #2A2A2A;
   width: 600px;
-  height: 230px;
+  height: fit-content;
   margin-left: 50px;
   border-radius: 12px;
   padding: 30px;
   color: white;
   margin-top: -900px;
   font-size: 20px;
+  
 }
 
 #Sign-in{
