@@ -51,6 +51,7 @@
   width: 100vw;
   background-image: linear-gradient(#5627EF, white);
   overflow-y: scroll;
+  overflow-y: hidden;
   padding-left: 150px;
   padding-right: 150px;
   box-sizing: border-box;
