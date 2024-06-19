@@ -30,7 +30,6 @@ const Home: React.FC = () => {
     const [searchCategory, setSearchCategory] = useState('track');
     const [addPlaylist, setAddPlaylist] = useState('');
     const [name, setName] = useState('');
-    const [playlistName, setPlaylistName] = useState('');
 
     const playlistDivRef = useRef<HTMLDivElement>(null);
 
@@ -83,9 +82,9 @@ const Home: React.FC = () => {
     };
     
     const handleSendPlaylist = (id: string, name: string) => {
-        spotifyAPI(`playlists/${id}/tracks`,{uris: [addPlaylist], position: 0}, console.log);
+        console.log(name);
+        spotifyAPI(`playlists/${id}/tracks`,{uris: [addPlaylist], position: 0}, setPlaylists, undefined, name);
         setAddPlaylist('');
-        setPlaylistName(name);
         if (playlistDivRef.current) {
             playlistDivRef.current.style.display = 'none';
         }
@@ -94,7 +93,7 @@ const Home: React.FC = () => {
     }
 
 
-    const spotifyAPI = async (query: string, params: object, set: React.Dispatch<React.SetStateAction<any[]>>, temp?: string) => {
+    const spotifyAPI = async (query: string, params: object, set: React.Dispatch<React.SetStateAction<any[]>>, temp?: string, playlistName?: string) => {
         let access: string = token;
         if (temp) {
             access = temp;
