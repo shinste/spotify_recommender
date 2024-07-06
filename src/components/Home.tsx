@@ -6,6 +6,8 @@ import Select from "./Select";
 import Search from "./Search";
 import Recommendation from "./Recommendation";
 import Playlists from "./Playlists";
+import SideBar from "./SideBar";
+import ViewPlaylist from "./ViewPlaylist";
 
 
 // Home Component
@@ -20,6 +22,7 @@ const Home: React.FC = () => {
     const [searchArtists, setSearchArtists] = useState<any[]>([]);
     const [searchSongs, setSearchSongs] = useState<any[]>([]);
     const [playlists, setPlaylists] = useState<any[]>([]);
+    const [displayPlaylist, setDisplayPlaylist] = useState<any[]>([]);
     const [mute, setMute] = useState(false)
     const [recommended, setRecommended] = useState<any[]>([]);
     const [positions, setPositions] = useState<{[key: string]: {[key: string]: string}}>({"imageDrop1": {}, "imageDrop2": {}, "imageDrop3": {}, "imageDrop4": {}, "imageDrop5": {}});
@@ -30,6 +33,8 @@ const Home: React.FC = () => {
     const [searchCategory, setSearchCategory] = useState('track');
     const [addPlaylist, setAddPlaylist] = useState('');
     const [name, setName] = useState('');
+    const [sidebar, setSidebar] = useState('home');
+    const [playlistName, setPlaylistName] = useState('');
 
     const playlistDivRef = useRef<HTMLDivElement>(null);
 
@@ -57,11 +62,8 @@ const Home: React.FC = () => {
 
     const handleClickOutside = (e: MouseEvent) => {
         const target = e.target as Node;
-        console.log('click at all')
         if (playlistDivRef.current && playlistDivRef.current.contains(target)) {
-            
         } else {
-          console.log('im clicking outside and the thing should close');
           if (playlistDivRef.current) {
             playlistDivRef.current.style.display = 'none';
           }
@@ -81,27 +83,28 @@ const Home: React.FC = () => {
             }
     };
     
-    const handleSendPlaylist = (id: string, name: string) => {
-        console.log(name);
-        spotifyAPI(`playlists/${id}/tracks`,{uris: [addPlaylist], position: 0}, setPlaylists, undefined, name);
-        setAddPlaylist('');
-        if (playlistDivRef.current) {
-            playlistDivRef.current.style.display = 'none';
+    const handleSendPlaylist = (id: string, name: string, uri?: string) => {
+        if (!uri) {
+            spotifyAPI(`playlists/${id}/tracks`,{uris: [addPlaylist], position: 0}, setPlaylists, undefined, name, true);
+            setAddPlaylist('');
+            if (playlistDivRef.current) {
+                playlistDivRef.current.style.display = 'none';
+            }
+            window.removeEventListener('click', handleClickOutside);
+        } else {
+            console.log(id, name, uri, 'checking');
+            spotifyAPI(`playlists/${id}/tracks`,{uris: [uri], position: 0}, setPlaylists, undefined, name, true);
         }
-        window.removeEventListener('click', handleClickOutside);
-        console.log('should be removed');   
     }
 
 
-    const spotifyAPI = async (query: string, params: object, set: React.Dispatch<React.SetStateAction<any[]>>, temp?: string, playlistName?: string) => {
+    const spotifyAPI = async (query: string, params: object, set: React.Dispatch<React.SetStateAction<any[]>>, temp?: string, playlistName?: string, post?: boolean) => {
         let access: string = token;
         if (temp) {
             access = temp;
         }
-        console.log(`spotify api call: ${query}`);
         try {
-            if (!query.includes('me') && !query.includes('search')) {
-                console.log(params);
+            if (post) {
                 const response = await axios.post(`https://api.spotify.com/v1/${query}`,
                     params,
                     {
@@ -110,17 +113,17 @@ const Home: React.FC = () => {
                     },
                     }
                 )
-                if (response.status === 200) {
+                if (response.status === 200 || response.status === 201) {
                     setSuccess(`Successfully added ${name} to ${playlistName}`);
                 }
             } else {
+                console.log(query, 'api check');
                 const {data} = await axios.get(`https://api.spotify.com/v1/${query}`, {
                 headers: {
                     Authorization: `Bearer ${access}`
                 },
                 params: params
                 })
-                console.log(data, query + ' data')
                 if (query === 'me') {
                     const personalData = Object.fromEntries(
                         Object.entries(personal).map(([key, value]) =>
@@ -128,12 +131,11 @@ const Home: React.FC = () => {
                         )
                     )
                     setPersonal(personalData);
-                    getPlaylists(data.id, access);
+                    getPlaylists(access);
                 } else {
                     if (query === "search") {
                         if (data.tracks) {
                             set(data.tracks.items);
-                            console.log('hit', query);
                         } else {
                             set(data.artists.items); 
                         }
@@ -148,8 +150,7 @@ const Home: React.FC = () => {
         }
     }
 
-    const getPlaylists = async (userId: string, token: string) => {
-        console.log(token, 'bearertoken');
+    const getPlaylists = async (token: string) => {
         try {
             const {data} = await axios.get('https://api.spotify.com/v1/me/playlists', {
             headers: {
@@ -162,11 +163,12 @@ const Home: React.FC = () => {
         }
     }
 
-    function handleDrag(e: React.DragEvent, id: string, title: string, type: string, image: string) {
+    function handleDrag(e: React.DragEvent, id: string, title: string, type: string, image: string, uri: string) {
         e.dataTransfer.setData('title', title);
         e.dataTransfer.setData('image', image);
         e.dataTransfer.setData('id', id);
         e.dataTransfer.setData('type', type);
+        e.dataTransfer.setData('uri', uri);
     }
 
     const handleAdd = (id: string, title: string, type: string, url: string) => {
@@ -191,6 +193,11 @@ const Home: React.FC = () => {
         }
     }
 
+    useEffect(() => {
+        if (sidebar === "logout") {
+            setToken('');
+        }
+    }, [sidebar])
 
     if (!token) {
         return (
@@ -198,30 +205,36 @@ const Home: React.FC = () => {
         )
     }
     return (
-        <body className="Body-main">
-            {error && 
-                <div id="dismiss-alert" className="bg-red-50 border border-red-200 text-sm text-red-800 rounded-lg p-4 dark:bg-red-800/10 dark:border-red-900" role="alert" >
-                    {error}
-                <button className="ml-3 dismissButton" onClick={() => setError('')}>X</button>
-            </div>}
-            {success && 
-                <div id="dismiss-notification" className="border border-green-200 text-sm text-black-800 rounded-lg p-4 dark:bg-green-800  dark:border-green-900 opacity-90">
-                    {success}
-                    <button className="ml-3 dismissButton" onClick={() => setSuccess('')}>X</button>
+        <body className="Body-main Flex">
+            <SideBar sidebar={sidebar} setSidebar={setSidebar} username={personal.username} playlist={playlists} setPlaylistName={setPlaylistName} handleSendPlaylist={handleSendPlaylist}/>
+            <div style={{width: '100%'}}>
+                {error && 
+                    <div id="dismiss-alert" className="bg-red-50 border border-red-200 text-sm text-red-800 rounded-lg p-4 dark:bg-red-800/10 dark:border-red-900" role="alert" >
+                        {error}
+                    <button className="ml-3 dismissButton" onClick={() => setError('')}>X</button>
                 </div>}
-            <Playlists name={name} playlistDivRef={playlistDivRef} playlists={playlists} personal={personal} handleSendPlaylist={handleSendPlaylist}/>
-            <h1>SPOTIFY RECOMMENDER</h1>
-            <Recommendation token={token} order={order} setOrder={setOrder} allIds={allIds} positions={positions} setPositions={setPositions} setAllIds={setAllIds} recommended={recommended} setRecommended={setRecommended} setSelected={setSelected} mute={mute} setMute={setMute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd} />
-            <Select setSelected={setSelected} selected={selected}/>
-            {selected === "Search" && 
-                <Search spotifyAPI={spotifyAPI} setSearchSongs={setSearchSongs} setSearchArtists={setSearchArtists} searchCategory={searchCategory} setSearchCategory={setSearchCategory}/>         
-            }
-            <div className="Vertical-flex Main">
-                {(searchSongs.length > 0 && searchCategory === "track" && (selected === "All" || selected === 'Search')) && <Display showcase={searchSongs} title={'Song Search Results'} setMute={setMute} mute={mute} reference={'songsearchresults'} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd}/>}
-                {(searchArtists.length > 0  && searchCategory === "artist" && (selected === "All" || selected === 'Search')) && <Display showcase={searchArtists} title={'Artist Search Results'} setMute={setMute} mute={mute} reference={'artistsearchresults'} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd}/>}
-                {(selected === "All" || selected === 'Most') && <Display showcase={topSongs} title={'Most Played Songs'} reference={'topsongs'} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd}/>}
-                {(selected === "All" || selected === 'Top') && <Display showcase={topArtists} title={'Your Top Artists'} reference={'topartists'} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd}/>}
-                {(selected === "All" || selected === 'Saved') && <Display showcase={savedSongs} title={'Saved Songs'} reference={'savedsongs'} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd}/>}
+                {success && 
+                    <div id="dismiss-notification" className="border border-green-200 text-sm text-black-800 rounded-lg p-4 dark:bg-green-800  dark:border-green-900 opacity-90">
+                        {success}
+                        <button className="ml-3 dismissButton" onClick={() => setSuccess('')}>X</button>
+                    </div>}
+                <Playlists name={name} playlistDivRef={playlistDivRef} playlists={playlists} personal={personal} handleSendPlaylist={handleSendPlaylist}/>
+                <Recommendation token={token} order={order} setOrder={setOrder} allIds={allIds} positions={positions} setPositions={setPositions} setAllIds={setAllIds} recommended={recommended} setRecommended={setRecommended} setSelected={setSelected} mute={mute} setMute={setMute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd} />
+                
+                <div id="scroll-main">
+                    {/* {sidebar !== "search" && sidebar !== "home" && sidebar !== 'logout' && <Display showcase={displayPlaylist} title={`Playlist: ${playlistName}`} reference={'topsongs'} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd}/>} */}
+                    {sidebar !== 'search' && <Select setSelected={setSelected} selected={selected} setSidebar={setSidebar}/>}
+                    {sidebar === 'search' && 
+                        <Search spotifyAPI={spotifyAPI} setSearchSongs={setSearchSongs} setSearchArtists={setSearchArtists} searchCategory={searchCategory} setSearchCategory={setSearchCategory}/>         
+                    }
+                    <div className="Vertical-flex Main">
+                        {(searchSongs.length > 0 && searchCategory === "track" && (selected === "All" || selected === 'Search')) && <Display showcase={searchSongs} title={'Song Search Results'} setMute={setMute} mute={mute} reference={'songsearchresults'} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd}/>}
+                        {(selected === "All" || selected === 'Most') && (sidebar !== 'search') && <Display showcase={topSongs} title={'Most Played Songs'} reference={'topsongs'} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd}/>}
+                        {(selected === "All" || selected === 'Top') && (sidebar !== 'search') && <Display showcase={topArtists} title={'Your Top Artists'} reference={'topartists'} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd}/>}
+                        {(selected === "All" || selected === 'Saved') && (sidebar !== 'search') && <Display showcase={savedSongs} title={'Saved Songs'} reference={'savedsongs'} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd}/>}
+                        {(searchArtists.length > 0 && searchCategory === "artist") && sidebar === "search" && <Display showcase={searchArtists} title={'Artist Search Results'} setMute={setMute} mute={mute} reference={'artistsearchresults'} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd}/>}
+                    </div>
+                </div>
             </div>
         </body>
     );

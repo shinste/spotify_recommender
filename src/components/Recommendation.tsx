@@ -17,7 +17,7 @@ interface RecommendationProps {
     mute: boolean,
     setMute: React.Dispatch<React.SetStateAction<boolean>>,
     handleButtonClick: (uri: string, e: React.MouseEvent<HTMLButtonElement, MouseEvent>, name: string) => void,
-    handleDrag: (e: React.DragEvent, id: string, title: string, type: string, image: string) => void,
+    handleDrag: (e: React.DragEvent, id: string, title: string, type: string, image: string, uri: string) => void,
     handleAdd: (id: string, title: string, type: string, url: string) => void
 
 }
@@ -124,9 +124,9 @@ const Recommendation: React.FC<RecommendationProps> = ({token, order, setOrder, 
 
     return (
         <div id='Recommendation-div'>
-        <h4>Recommendation Customizer</h4>
-        <div className="Flex" style={{marginBottom: '80px'}}>
-            <div className="Vertical-flex" style={{overflowY: 'auto'}}>
+            <h4>Recommendation Customizer</h4>
+            <div className="Flex" style={{marginBottom: '80px'}}>
+                <div className="Vertical-flex" style={{overflowY: 'auto'}}>
             </div>
                 <div id="Main-display">
                     {allIds.length > 0 &&
@@ -159,19 +159,19 @@ const Recommendation: React.FC<RecommendationProps> = ({token, order, setOrder, 
                         <button id="Right-button" onClick={handleRight}>&gt;</button>
                     }
                 </div>
-        </div>
-        {recommended.length > 0 && <button onClick={() => {setAllIds([]);
-                                                           setPositions({"imageDrop1": {}, "imageDrop2": {}, "imageDrop3": {}, "imageDrop4": {}, "imageDrop5": {}})}}>Clear Seed Songs/Artists</button>}
-        {recommended.length === 0 && 
-            <button onClick={recommend} className="py-3 px-4 gap-x-2 mb-5 text-sm font-semibold rounded-lg border border-transparent bg-purple-600 text-white hover:bg-purple-700">
-                Create Recommendation
-            </button>
-        }
-        {recommended.length > 0 &&<Display showcase={recommended} title={'Recommended Songs'} reference={'recommended'} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd}/>}
-        {recommended.length > 0 && 
-            <button onClick={recommend} className="py-3 px-4 gap-x-2 mb-5 text-sm font-semibold rounded-lg border border-transparent bg-purple-600 text-white hover:bg-purple-700">
-                Generate New Recommendations
-            </button> }
+            </div>
+            {recommended.length > 0 && <button onClick={() => {setAllIds([]);
+                                                            setPositions({"imageDrop1": {}, "imageDrop2": {}, "imageDrop3": {}, "imageDrop4": {}, "imageDrop5": {}})}}>Clear Seed Songs/Artists</button>}
+            {recommended.length === 0 && 
+                <button onClick={recommend} className="py-3 px-4 gap-x-2 mb-5 text-sm font-semibold rounded-lg border border-transparent bg-purple-600 text-white hover:bg-purple-700">
+                    Create Recommendation
+                </button>
+            }
+            {recommended.length > 0 &&<Display showcase={recommended} title={'Recommended Songs'} reference={'recommended'} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd}/>}
+            {recommended.length > 0 && 
+                <button onClick={recommend} className="py-3 px-4 gap-x-2 mb-5 text-sm font-semibold rounded-lg border border-transparent bg-purple-600 text-white hover:bg-purple-700">
+                    Generate New Recommendations
+                </button> }
     </div>
     );
 }

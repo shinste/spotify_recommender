@@ -9,7 +9,7 @@ interface PlaylistsProps {
 const Playlists: React.FC<PlaylistsProps> = ({name, playlistDivRef, playlists, personal, handleSendPlaylist}) => {
     return (
         <div className="Playlist-div hidden" id="Add-playlist-div" ref={playlistDivRef}>
-        <h2>Add <span style={{fontWeight: 'bolder'}}>{name}</span> to which playlist?</h2>
+        <h2 style={{color: 'whitesmoke'}}>Add <span style={{fontWeight: 'bold'}}>{name}</span> to which playlist?</h2>
         <div >
             {playlists.map((item, index) => {
                 if (item.owner.id === personal.id || item.collaborative) {
@@ -20,7 +20,7 @@ const Playlists: React.FC<PlaylistsProps> = ({name, playlistDivRef, playlists, p
                                 <h2 className="Playlist-name">
                                     {item.name}
                                 </h2>  
-                                {item.owner.display_name}
+                                <p style={{color: 'gray'}}>{item.owner.display_name}</p>
                             </button>
                         </div>
                     );

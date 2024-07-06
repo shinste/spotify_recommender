@@ -1,8 +1,8 @@
 
 const Login = () => {
     const CLIENT_ID = "65fc2d5eaa7d475f8dd7bf2b7c98c515";
-    const REDIRECT_URI = "https://master--spotifysongrecommender.netlify.app";
-    // const REDIRECT_URI = "http://localhost:3000"
+    // const REDIRECT_URI = "https://master--spotifysongrecommender.netlify.app";
+    const REDIRECT_URI = "http://localhost:3000"
 
     const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
     const TYPE = "token";
@@ -19,10 +19,9 @@ const Login = () => {
                         <h3 id="Description">Let Spotify know you approve!</h3>
                         <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${TYPE}&scope=user-top-read,user-library-read,user-read-private,user-read-email,playlist-read-private,playlist-modify-public,playlist-modify-private`}>
                             <button id="Sign-in">Sign In</button>
-                        </a>    
+                        </a>
                     </div>
                 </div>
-                
             </div>
             <div className="Flex">
                 <div id="Disclaimer">
