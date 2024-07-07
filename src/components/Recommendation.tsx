@@ -19,6 +19,7 @@ interface RecommendationProps {
     handleButtonClick: (uri: string, e: React.MouseEvent<HTMLButtonElement, MouseEvent>, name: string) => void;
     handleDrag: (e: React.DragEvent, id: string, title: string, type: string, image: string, uri: string) => void;
     handleAdd: (id: string, title: string, type: string, url: string) => void;
+    playlist: string
 }
 
 const Recommendation: React.FC<RecommendationProps> = ({
@@ -36,7 +37,8 @@ const Recommendation: React.FC<RecommendationProps> = ({
     setMute,
     handleButtonClick,
     handleDrag,
-    handleAdd
+    handleAdd,
+    playlist
 }) => {
 
     const recommend = async () => {
@@ -181,7 +183,7 @@ const Recommendation: React.FC<RecommendationProps> = ({
                         </button>
                     }
                     <div className='horizontal-center' style={{ width: '73vw' }}>
-                        {recommended.length > 0 && <Display showcase={recommended} title={'Recommended Songs'} reference={'recommended'} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd} />}
+                        {recommended.length > 0 && <Display showcase={recommended} title={'Recommended Songs'} reference={'recommended'} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd} playlist={playlist}/>}
                     </div>
                     {recommended.length > 0 &&
                         <button onClick={recommend} className="py-3 px-4 gap-x-2 mb-5 text-sm font-semibold rounded-lg border border-transparent bg-purple-600 text-white hover:bg-purple-700">

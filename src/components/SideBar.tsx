@@ -1,16 +1,19 @@
-import Home from '../icons/home.png'
-import Search from '../icons/search.png'
-import Logout from '../icons/logout.png'
+import Home from '../icons/home.png';
+import Search from '../icons/search.png';
+import Logout from '../icons/logout.png';
+import Tooltip from '@mui/material/Tooltip';
+import { useState } from 'react';
 interface SideBarComponents {
     sidebar: string,
     setSidebar: React.Dispatch<React.SetStateAction<string>>,
     username: string,
     playlist: any[],
-    setPlaylistName: React.Dispatch<React.SetStateAction<string>>,
-    handleSendPlaylist: (id: string, name: string, uri: string) => void
+    handleSendPlaylist: (id: string, name: string, uri: string) => void,
+    setPlaylistIndex: React.Dispatch<React.SetStateAction<number | null>>
 }
-const SideBar: React.FC<SideBarComponents> = ({sidebar, setSidebar, username, playlist, setPlaylistName, handleSendPlaylist}) => {
+const SideBar: React.FC<SideBarComponents> = ({sidebar, setSidebar, username, playlist, handleSendPlaylist, setPlaylistIndex}) => {
     console.log(playlist);
+    const [focus, setFocus] = useState<number | null>(null)
     const handleDrop = (e: React.DragEvent, playlistId: string) => {
         const songTitle = e.dataTransfer.getData('title') as string;
         const songUri = e.dataTransfer.getData('uri') as string;
@@ -52,16 +55,16 @@ const SideBar: React.FC<SideBarComponents> = ({sidebar, setSidebar, username, pl
                 <hr id="divider" />
                 {playlist.map((value, index) => {
                     return(
-                        <div key={index} className='sidebar-playlist-div' onDrop={(e) => handleDrop(e, value.id)} onDragOver={handleDragOver}>
-                            <button className='sidebar-button' onClick={() => {setSidebar(value.id); setPlaylistName(value.name);}} style={{color: sidebar === value.id ? 'white': undefined}}>
-                                <p className='sidebar-playlists'>{value.name}</p>
-                            </button>
-                        </div>
+                        <Tooltip title="Quick Add to Playlist">
+                            <div key={index} className='sidebar-playlist-div' onDrop={(e) => handleDrop(e, value.id)} onDragOver={handleDragOver}>
+                                <button className='sidebar-button' onClick={() => {setSidebar('playlist'); setPlaylistIndex(index); setFocus(index); console.log(index)}} style={{color: focus === index && sidebar === "playlist" ? 'white': undefined}}>
+                                    <p className='sidebar-playlists'>{value.name}</p>
+                                </button>
+                            </div>
+                        </Tooltip>
                     )
                 })}
             </div>
-            
-
         </div>
     );
 }

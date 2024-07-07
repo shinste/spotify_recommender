@@ -7,7 +7,6 @@ import Search from "./Search";
 import Recommendation from "./Recommendation";
 import Playlists from "./Playlists";
 import SideBar from "./SideBar";
-import ViewPlaylist from "./ViewPlaylist";
 
 
 // Home Component
@@ -34,7 +33,7 @@ const Home: React.FC = () => {
     const [addPlaylist, setAddPlaylist] = useState('');
     const [name, setName] = useState('');
     const [sidebar, setSidebar] = useState('home');
-    const [playlistName, setPlaylistName] = useState('');
+    const [playlistIndex, setPlaylistIndex] = useState<number | null>(null);
 
     const playlistDivRef = useRef<HTMLDivElement>(null);
 
@@ -72,15 +71,19 @@ const Home: React.FC = () => {
     };
     
     const handleButtonClick = (uri: string, e: React.MouseEvent<HTMLButtonElement, MouseEvent>, name: string) => {
-        e.stopPropagation();
-        setAddPlaylist(uri);
-        setName(name);
-        if (playlistDivRef.current) {
-            playlistDivRef.current.style.display = 'block';
-        }
-            if (playlistDivRef.current && playlistDivRef.current.style.display === 'block') {
-                window.addEventListener('click', handleClickOutside);
+        if (playlistIndex) {
+            spotifyAPI(`playlists/${playlists[playlistIndex].id}/tracks`,{uris: [uri], position: 0}, setPlaylists, undefined, name, true);
+        } else {
+            e.stopPropagation();
+            setAddPlaylist(uri);
+            setName(name);
+            if (playlistDivRef.current) {
+                playlistDivRef.current.style.display = 'block';
             }
+                if (playlistDivRef.current && playlistDivRef.current.style.display === 'block') {
+                    window.addEventListener('click', handleClickOutside);
+                }
+        }
     };
     
     const handleSendPlaylist = (id: string, name: string, uri?: string) => {
@@ -114,7 +117,12 @@ const Home: React.FC = () => {
                     }
                 )
                 if (response.status === 200 || response.status === 201) {
-                    setSuccess(`Successfully added ${name} to ${playlistName}`);
+                    if (playlistIndex) {
+                        setSuccess(`Successfully added ${playlistName} to ${playlists[playlistIndex].name}`);
+                    } else {
+                        setSuccess(`Successfully added ${name} to ${playlistName}`);
+                    }
+                    
                 }
             } else {
                 console.log(query, 'api check');
@@ -197,6 +205,9 @@ const Home: React.FC = () => {
         if (sidebar === "logout") {
             setToken('');
         }
+        if (sidebar !== "playlist" && playlistIndex) {
+            setPlaylistIndex(null);
+        }
     }, [sidebar])
 
     if (!token) {
@@ -206,7 +217,7 @@ const Home: React.FC = () => {
     }
     return (
         <body className="Body-main Flex">
-            <SideBar sidebar={sidebar} setSidebar={setSidebar} username={personal.username} playlist={playlists} setPlaylistName={setPlaylistName} handleSendPlaylist={handleSendPlaylist}/>
+            <SideBar sidebar={sidebar} setSidebar={setSidebar} username={personal.username} playlist={playlists} setPlaylistIndex={setPlaylistIndex} handleSendPlaylist={handleSendPlaylist}/>
             <div style={{width: '100%'}}>
                 {error && 
                     <div id="dismiss-alert" className="bg-red-50 border border-red-200 text-sm text-red-800 rounded-lg p-4 dark:bg-red-800/10 dark:border-red-900" role="alert" >
@@ -219,7 +230,7 @@ const Home: React.FC = () => {
                         <button className="ml-3 dismissButton" onClick={() => setSuccess('')}>X</button>
                     </div>}
                 <Playlists name={name} playlistDivRef={playlistDivRef} playlists={playlists} personal={personal} handleSendPlaylist={handleSendPlaylist}/>
-                <Recommendation token={token} order={order} setOrder={setOrder} allIds={allIds} positions={positions} setPositions={setPositions} setAllIds={setAllIds} recommended={recommended} setRecommended={setRecommended} setSelected={setSelected} mute={mute} setMute={setMute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd} />
+                <Recommendation token={token} order={order} setOrder={setOrder} allIds={allIds} positions={positions} setPositions={setPositions} setAllIds={setAllIds} recommended={recommended} setRecommended={setRecommended} setSelected={setSelected} mute={mute} setMute={setMute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd} playlist={playlistIndex ? playlists[playlistIndex].name : ''}/>
                 
                 <div id="scroll-main">
                     {/* {sidebar !== "search" && sidebar !== "home" && sidebar !== 'logout' && <Display showcase={displayPlaylist} title={`Playlist: ${playlistName}`} reference={'topsongs'} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd}/>} */}
@@ -228,11 +239,11 @@ const Home: React.FC = () => {
                         <Search spotifyAPI={spotifyAPI} setSearchSongs={setSearchSongs} setSearchArtists={setSearchArtists} searchCategory={searchCategory} setSearchCategory={setSearchCategory}/>         
                     }
                     <div className="Vertical-flex Main">
-                        {(searchSongs.length > 0 && searchCategory === "track" && (selected === "All" || selected === 'Search')) && <Display showcase={searchSongs} title={'Song Search Results'} setMute={setMute} mute={mute} reference={'songsearchresults'} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd}/>}
-                        {(selected === "All" || selected === 'Most') && (sidebar !== 'search') && <Display showcase={topSongs} title={'Most Played Songs'} reference={'topsongs'} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd}/>}
-                        {(selected === "All" || selected === 'Top') && (sidebar !== 'search') && <Display showcase={topArtists} title={'Your Top Artists'} reference={'topartists'} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd}/>}
-                        {(selected === "All" || selected === 'Saved') && (sidebar !== 'search') && <Display showcase={savedSongs} title={'Saved Songs'} reference={'savedsongs'} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd}/>}
-                        {(searchArtists.length > 0 && searchCategory === "artist") && sidebar === "search" && <Display showcase={searchArtists} title={'Artist Search Results'} setMute={setMute} mute={mute} reference={'artistsearchresults'} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd}/>}
+                        {(searchSongs.length > 0 && searchCategory === "track" && (selected === "All" || selected === 'Search')) && <Display showcase={searchSongs} title={'Song Search Results'} setMute={setMute} mute={mute} reference={'songsearchresults'} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd} playlist={playlistIndex ? playlists[playlistIndex].name : ''}/>}
+                        {(selected === "All" || selected === 'Most') && (sidebar !== 'search') && <Display showcase={topSongs} title={'Most Played Songs'} reference={'topsongs'} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd} playlist={playlistIndex ? playlists[playlistIndex].name : ''}/>}
+                        {(selected === "All" || selected === 'Top') && (sidebar !== 'search') && <Display showcase={topArtists} title={'Your Top Artists'} reference={'topartists'} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd} playlist={playlistIndex ? playlists[playlistIndex].name : ''}/>}
+                        {(selected === "All" || selected === 'Saved') && (sidebar !== 'search') && <Display showcase={savedSongs} title={'Saved Songs'} reference={'savedsongs'} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd} playlist={playlistIndex ? playlists[playlistIndex].name : ''}/>}
+                        {(searchArtists.length > 0 && searchCategory === "artist") && sidebar === "search" && <Display showcase={searchArtists} title={'Artist Search Results'} setMute={setMute} mute={mute} reference={'artistsearchresults'} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd} playlist={playlistIndex ? playlists[playlistIndex].name : ''}/>}
                     </div>
                 </div>
             </div>
