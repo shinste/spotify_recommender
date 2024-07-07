@@ -133,8 +133,8 @@ const Recommendation: React.FC<RecommendationProps> = ({
 
     return (
         <div id='Recommendation-div' className='horizontal-center'>
-            <h4>Recommendation Customizer</h4>
-            <div className="Vertical-flex" style={{ marginBottom: '80px' }}>
+            <h4 id='title-margins'>Recommendation Customizer</h4>
+            <div className="Vertical-flex" style={{ marginBottom: '40px' }}>
                 <div id="Main-display">
                     {allIds.length > 0 &&
                         <button id="Left-button" onClick={handleLeft}>&lt;</button>
@@ -166,11 +166,15 @@ const Recommendation: React.FC<RecommendationProps> = ({
                         <button id="Right-button" onClick={handleRight}>&gt;</button>
                     }
                 </div>
-                <div className='horizontal-center' style={{marginTop: '30px'}}>
-                    {recommended.length > 0 && <button onClick={() => {
-                        setAllIds([]);
-                        setPositions({ "imageDrop1": {}, "imageDrop2": {}, "imageDrop3": {}, "imageDrop4": {}, "imageDrop5": {} });
-                    }}>Clear Seed Songs/Artists</button>}
+                <div className='horizontal-center' style={{marginTop: '60px'}}>
+                    {recommended.length > 0 && 
+                    <div>
+                        <button className="sidebar-button" onClick={() => {
+                            setAllIds([]);
+                            setPositions({ "imageDrop1": {}, "imageDrop2": {}, "imageDrop3": {}, "imageDrop4": {}, "imageDrop5": {} });
+                        }}><h4 className='no-margin'>Clear Seed Songs/Artists</h4></button>
+                        <button className="sidebar-button" onClick={() => setRecommended([])}><h4 className='no-margin'>Clear Recommendations</h4></button>
+                    </div>}
                     {recommended.length === 0 &&
                         <button onClick={recommend} className="py-3 px-4 gap-x-2 mb-5 text-sm font-semibold rounded-lg border border-transparent bg-purple-600 text-white hover:bg-purple-700">
                             Create Recommendation
@@ -182,7 +186,8 @@ const Recommendation: React.FC<RecommendationProps> = ({
                     {recommended.length > 0 &&
                         <button onClick={recommend} className="py-3 px-4 gap-x-2 mb-5 text-sm font-semibold rounded-lg border border-transparent bg-purple-600 text-white hover:bg-purple-700">
                             Generate New Recommendations
-                        </button>}
+                        </button>
+                    }
                 </div>
             </div>
         </div>
