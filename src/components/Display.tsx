@@ -168,7 +168,7 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                                                     </span>
                                                 </button>
                                             </Tooltip>
-                                            <Tooltip title={`Add Track to ${ playlist ? playlist : Playlist}`}>
+                                            <Tooltip title={`Add Track to ${ playlist ? playlist : 'Playlist'}`}>
                                                 <button onClick={(e) => handleButtonClick(item.uri, e, item.name)} id={'Playlist-below-' + title + String(index)} hidden style={{marginLeft: title !== 'Recommended Songs' ? '15px' : 0, backgroundColor: 'grey'}} >
                                                     <img src={Playlist} className="Hover-button" alt=""/>
                                                 </button>
