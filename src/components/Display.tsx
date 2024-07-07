@@ -263,7 +263,7 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                         </div>
                     );
                 })}
-                <div style={{minWidth: '720px'}}></div>
+                <div style={{minWidth: '520px'}}></div>
             </div>
     </div>
     );

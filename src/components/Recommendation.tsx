@@ -166,7 +166,7 @@ const Recommendation: React.FC<RecommendationProps> = ({
                         <button id="Right-button" onClick={handleRight}>&gt;</button>
                     }
                 </div>
-                <div className='horizontal-center results' style={{marginTop: '30px'}}>
+                <div className='horizontal-center' style={{marginTop: '30px'}}>
                     {recommended.length > 0 && <button onClick={() => {
                         setAllIds([]);
                         setPositions({ "imageDrop1": {}, "imageDrop2": {}, "imageDrop3": {}, "imageDrop4": {}, "imageDrop5": {} });
@@ -176,7 +176,7 @@ const Recommendation: React.FC<RecommendationProps> = ({
                             Create Recommendation
                         </button>
                     }
-                    <div className='horizontal-center' style={{ width: '800px' }}>
+                    <div className='horizontal-center' style={{ width: '73vw' }}>
                         {recommended.length > 0 && <Display showcase={recommended} title={'Recommended Songs'} reference={'recommended'} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd} />}
                     </div>
                     {recommended.length > 0 &&
