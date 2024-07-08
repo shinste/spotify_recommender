@@ -2,6 +2,7 @@ import axios from 'axios';
 import Display from "./Display";
 import Playlist from '../icons/playlist.png';
 import Remove from '../icons/remove.png';
+import { useState } from 'react';
 
 interface RecommendationProps {
     order: string[];
@@ -18,7 +19,7 @@ interface RecommendationProps {
     setMute: React.Dispatch<React.SetStateAction<boolean>>;
     handleButtonClick: (uri: string, e: React.MouseEvent<HTMLButtonElement, MouseEvent>, name: string) => void;
     handleDrag: (e: React.DragEvent, id: string, title: string, type: string, image: string, uri: string) => void;
-    handleAdd: (id: string, title: string, type: string, url: string) => void;
+    handleAdd: (id: string, title: string, type: string, url: string, uri: string) => void;
     playlist: string
 }
 
@@ -40,7 +41,7 @@ const Recommendation: React.FC<RecommendationProps> = ({
     handleAdd,
     playlist
 }) => {
-
+    const [title, setTitle] = useState(false);
     const recommend = async () => {
         const seedSongs = Object.entries(positions).map(([key, value]) =>
             value.type === "track" && value.seedId).filter(Boolean);
@@ -112,6 +113,7 @@ const Recommendation: React.FC<RecommendationProps> = ({
         if (addRemoveButton && playlistButton) {
             addRemoveButton.hidden = status;
             playlistButton.hidden = status;
+            setTitle(status);
         }
     }
 
@@ -136,7 +138,7 @@ const Recommendation: React.FC<RecommendationProps> = ({
     return (
         <div id='Recommendation-div' className='horizontal-center'>
             <h4 id='title-margins'>Recommendation Customizer</h4>
-            <div className="Vertical-flex" style={{ marginBottom: '40px' }}>
+            <div className="Vertical-flex" style={{ marginBottom: '10px' }}>
                 <div id="Main-display">
                     {allIds.length > 0 &&
                         <button id="Left-button" onClick={handleLeft}>&lt;</button>
@@ -151,16 +153,18 @@ const Recommendation: React.FC<RecommendationProps> = ({
                                     </div>
                                 }
                                 {Object.keys(positions[position]).length > 0 && index === 2 &&
-                                    <div className="Button-hover">
-                                        <button id={'Remove-Add-' + String(index)} hidden style={{ marginRight: '15px', backgroundColor: 'grey' }} onClick={() => handleRemove(position)}>
+                                    <div className="Button-hover" style={{position: 'relative', marginTop: '20px', padding: !title ? '1px' : '0px'}}>
+                                        <button id={'Remove-Add-' + String(index)} hidden style={{backgroundColor: 'grey', borderRadius: '12px'}} onClick={() => handleRemove(position)}>
                                             <img src={Remove} className='Hover-button' alt="" />
                                         </button>
-                                        <button id={'Playlist-' + String(index)} className="hs-dropdown-toggle" hidden style={{ marginLeft: '15px', backgroundColor: 'grey' }}>
+                                        <button id={'Playlist-' + String(index)} className="hs-dropdown-toggle" hidden style={{backgroundColor: 'grey', borderRadius: '12px'}} onClick={(e) => handleButtonClick(positions[position].uri,e,positions[position].title)}>
                                             <img src={Playlist} className='Hover-button' alt="" />
                                         </button>
                                     </div>
+                                    
                                 }
-                                <p style={{ color: 'whitesmoke', margin: 0}}>{positions[position].title}</p>
+                                {index === 2 && title && <p style={{ color: 'whitesmoke', margin: 0}}>{positions[position].title}</p>}
+                                {index !== 2 &&<p style={{ color: 'whitesmoke', margin: 0}}>{positions[position].title}</p>}
                             </div>
                         );
                     })}

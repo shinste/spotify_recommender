@@ -15,7 +15,7 @@ interface DisplayProps {
     mute: boolean;
     handleButtonClick: (uris: string, e: React.MouseEvent<HTMLButtonElement, MouseEvent>, name: string) => void
     handleDrag: (e: React.DragEvent, songId: string, title: string, type: string, image: string, uri: string) => void;
-    handleAdd: (id: string, title: string, type: string, url: string) => void;
+    handleAdd: (id: string, title: string, type: string, url: string, uri: string) => void;
     playlist: string
 }
     
@@ -23,7 +23,7 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
     const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
     const divRefs = useRef<(HTMLDivElement | null)[]>([]);
     const [errors, setError] = useState<string[]>([]);
-
+    const [text, setText] = useState("");
     function scrollContent(direction: string) {
         const container = document.querySelector('#' + reference);
         if (container) {
@@ -95,6 +95,12 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
         const removeButton = document.getElementById('Add-' + identifier);
         const playlistButton = document.getElementById('Playlist-below-' + identifier);
         const volumeButton = document.getElementById('Volume-' + identifier);
+        const divButton = document.getElementById('Hover-' + identifier);
+        if (divButton && !status) {
+            divButton.style.padding = '3px';
+        } else if (divButton) {
+            divButton.style.padding = '0px';
+        }
         if (removeButton) {
             removeButton.hidden = status;
         }
@@ -104,10 +110,15 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
         if (volumeButton) {
             volumeButton.hidden = status;
         }
+        if (!status) {
+            setText(identifier);
+        } else{
+            setText('');
+        }
     }, []);
 
-    const memoizedHandleAdd = useCallback((id: string, title: string, type: string, url: string) => {
-        handleAdd(id, title, type, url);
+    const memoizedHandleAdd = useCallback((id: string, title: string, type: string, url: string, uri: string) => {
+        handleAdd(id, title, type, url, uri);
     }, [handleAdd]);
 
     useEffect(() => {
@@ -124,6 +135,7 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
         }
     }, [mute])
 
+
     return (
         <div className="Most-played">   
             <div style={{position: 'relative'}}>
@@ -135,82 +147,84 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                 </div>
                 
             </div>
-            <div id={reference} className="Display-container">
-                {showcase && showcase.map((item, index) => {
-                    if (title === "Saved Songs" || item.added_at) {
-                        item = item.track; 
-                    }
-                    let songTitle = "";
-                    if (item.type === "track") {
-                        songTitle = item.name + ' by ' + item.artists[0].name;
-                    }
-                    if (item.type === "artist" && item.images.length === 0) {
-                        return (<div></div>)
-                    }
-                    return (
-                        <div className="Display-div" key={"Display-div" + index}>
-                            {item.type === "track" ?
-                                <div 
-                                    draggable
-                                    onDragStart={(e) => handleDrag(e, item.id, songTitle, item.type, item.album.images[0].url, item.uri)}
-                                    ref={el => divRefs.current[index] = el}
-                                    onMouseEnter={() => {handlePreview(item.preview_url, divRefs.current[index]!); handleHover(title + String(index), false);}}
-                                    onMouseLeave={() => {handleHover(title + String(index), true);}}
-                                >
-                                    <img src={item.album.images[0].url} className="Display-img" alt=""/>
-                                    <div className="Button-hover" style={{flexDirection: 'column'}}>
-                                        <div className='Flex'>
+            <div style={{overflowX: 'hidden'}}>
+                <div id={reference} className="Display-container">
+                    {showcase && showcase.map((item, index) => {
+                        if (title === "Saved Songs" || item.added_at) {
+                            item = item.track; 
+                        }
+                        let songTitle = "";
+                        if (item.type === "track") {
+                            songTitle = item.name + ' by ' + item.artists[0].name;
+                        }
+                        if (item.type === "artist" && item.images.length === 0) {
+                            return (<div></div>)
+                        }
+                        return (
+                            <div className="Display-div" key={"Display-div" + index}>
+                                {item.type === "track" ?
+                                    <div 
+                                        draggable
+                                        onDragStart={(e) => handleDrag(e, item.id, songTitle, item.type, item.album.images[0].url, item.uri)}
+                                        ref={el => divRefs.current[index] = el}
+                                        onMouseEnter={() => {handlePreview(item.preview_url, divRefs.current[index]!); handleHover(title + String(index), false);}}
+                                        onMouseLeave={() => {handleHover(title + String(index), true);}}
+                                    >
+                                        <img src={item.album.images[0].url} className="Display-img" alt=""/>
+                                        <div id={"Hover-" + title + String(index)} className="Button-hover">
                                             <Tooltip title="Add to Selection">
-                                                <button id={'Add-' + title + String(index)} hidden className="hs-tooltip-toggle" style={{marginRight: '15px', backgroundColor: 'grey'}} onClick={() => memoizedHandleAdd(item.id, item.name, item.type, item.album.images[0].url)}>
+                                                <button id={'Add-' + title + String(index)} hidden className="hs-tooltip-toggle tool-button" onClick={() => memoizedHandleAdd(item.id, item.name, item.type, item.album.images[0].url, item.uri)}>
                                                     <img src={Add} className="Hover-button" alt=""/>
                                                     <span className="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 transition-opacity inline-block absolute invisible z-10 py-1 px-2 bg-gray-900 text-xs font-medium text-white rounded shadow-sm dark:bg-neutral-700" role="tooltip">
                                                         Tooltip on top
                                                     </span>
                                                 </button>
                                             </Tooltip>
+                                            <Tooltip title="Toggle Preview">
+                                                <button id={'Volume-' + title + String(index)} hidden onClick={() => setMute(!mute)} className='Volume-button'>
+                                                    <img id="volume-button" src={mute ? Mute : Audio} alt=""/>
+                                                </button>
+                                            </Tooltip>
                                             <Tooltip title={`Add Track to ${ playlist ? playlist : 'Playlist'}`}>
-                                                <button onClick={(e) => handleButtonClick(item.uri, e, item.name)} id={'Playlist-below-' + title + String(index)} hidden style={{marginLeft: title !== 'Recommended Songs' ? '15px' : 0, backgroundColor: 'grey'}} >
+                                                <button onClick={(e) => handleButtonClick(item.uri, e, item.name)} hidden id={'Playlist-below-' + title + String(index)} style={{marginLeft: title !== 'Recommended Songs' ? '15px' : 0, backgroundColor: 'grey', borderRadius: '12px'}} >
                                                     <img src={Playlist} className="Hover-button" alt=""/>
                                                 </button>
                                             </Tooltip>
+
                                         </div>
-                                        <Tooltip title="Toggle Preview">
-                                            <button id={'Volume-' + title + String(index)} onClick={() => setMute(!mute)} hidden className='Volume-button'>
-                                                <img id="volume-button" src={mute ? Mute : Audio} alt=""/>
-                                            </button>
-                                        </Tooltip>
+                                                                        
+                                        <div className="Display-p">
+                                            <p style={{marginBottom: 0}}>{text !== (title + String(index)) && songTitle}</p>
+                                        </div>
+                                        <audio id={item.preview_url} ><source src={item.preview_url} type="audio/mpeg"/></audio>
+                                        {errors.includes(item.preview_url) && <p id="Unavailable" >Unavailable Preview</p>}
                                     </div>
-                                    <div className="Display-p">
-                                        <p style={{marginBottom: 0}}>{songTitle}</p>
+                                    :
+                                    <div
+                                        draggable
+                                        onDragStart={(e) => handleDrag(e, item.id, item.name, item.type, item.images[0].url, item.uri)}
+                                        onMouseEnter={() => handleHover(title + String(index), false)}
+                                        onMouseLeave={() => handleHover(title + String(index), true)}
+                                    >
+                                        <img src={item.images[0].url} className="Display-img" alt=""/>
+                                        <div id={"Hover-" + title + String(index)} className="Button-hover">
+                                            <Tooltip title="Add to Selection">
+                                                <button id={'Add-' + title + String(index)}hidden style={{backgroundColor: 'grey', borderRadius: '12px'}} onClick={() => memoizedHandleAdd(item.id, item.name, item.type, item.images[0].url, 'not available')}>
+                                                    <img src={Add} className='Hover-button' alt=""/>
+                                                </button>
+                                            </Tooltip>
+                                        </div>
+                                        <div className="Display-p">
+                                            <p>{text !== (title + String(index)) && item.name}</p>
+                                        </div>
                                     </div>
-                                    <audio id={item.preview_url} ><source src={item.preview_url} type="audio/mpeg"/></audio>
-                                    {errors.includes(item.preview_url) && <p id="Unavailable" >Unavailable Preview</p>}
-                                </div>
-                                :
-                                <div
-                                    draggable
-                                    onDragStart={(e) => handleDrag(e, item.id, item.name, item.type, item.images[0].url, item.uri)}
-                                    onMouseEnter={() => handleHover(title + String(index), false)}
-                                    onMouseLeave={() => handleHover(title + String(index), true)}
-                                >
-                                    <img src={item.images[0].url} className="Display-img" alt=""/>
-                                    <div className="Button-hover">
-                                    <Tooltip title="Add to Selection">
-                                        <button id={'Add-' + title + String(index)}hidden style={{backgroundColor: 'grey'}} onClick={() => memoizedHandleAdd(item.id, item.name, item.type, item.images[0].url)}>
-                                            <img src={Add} className='Hover-button' alt=""/>
-                                        </button>
-                                    </Tooltip>
-                                    </div>
-                                    <div className="Display-p">
-                                        <p>{item.name}</p>
-                                    </div>
-                                </div>
-                            }
-                            
-                        </div>
-                    );
-                })}
-                <div style={{minWidth: '520px'}}></div>
+                                }
+                                
+                            </div>
+                        );
+                    })}
+                    <div style={{minWidth: '520px'}}></div>
+                </div>
             </div>
     </div>
     );

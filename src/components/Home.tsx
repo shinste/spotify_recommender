@@ -21,7 +21,6 @@ const Home: React.FC = () => {
     const [searchArtists, setSearchArtists] = useState<any[]>([]);
     const [searchSongs, setSearchSongs] = useState<any[]>([]);
     const [playlists, setPlaylists] = useState<any[]>([]);
-    const [displayPlaylist, setDisplayPlaylist] = useState<any[]>([]);
     const [mute, setMute] = useState(false)
     const [recommended, setRecommended] = useState<any[]>([]);
     const [positions, setPositions] = useState<{[key: string]: {[key: string]: string}}>({"imageDrop1": {}, "imageDrop2": {}, "imageDrop3": {}, "imageDrop4": {}, "imageDrop5": {}});
@@ -179,7 +178,7 @@ const Home: React.FC = () => {
         e.dataTransfer.setData('uri', uri);
     }
 
-    const handleAdd = (id: string, title: string, type: string, url: string) => {
+    const handleAdd = (id: string, title: string, type: string, url: string, uri: string) => {
         const middleSlot = order[2];
         const openSlots = order.filter((value) => 
             Object.keys(positions[value]).length === 0
@@ -195,7 +194,7 @@ const Home: React.FC = () => {
             }
             setPositions(Object.fromEntries(
                 Object.entries(positions).map(([key, value]) => 
-                key === insertSlot ? [key, {url: url, seedId: id, type: type, title: title}] : [key, value]
+                key === insertSlot ? [key, {url: url, seedId: id, type: type, title: title, uri: uri}] : [key, value]
             )))
             setAllIds([...allIds, id]);
         }
