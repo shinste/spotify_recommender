@@ -53,17 +53,19 @@ const SideBar: React.FC<SideBarComponents> = ({sidebar, setSidebar, username, pl
                         </button>
                 </div> 
                 <hr id="divider" />
-                {playlist.map((value, index) => {
-                    return(
-                        <Tooltip title="Quick Add to Playlist">
-                            <div key={index} className='sidebar-playlist-div' onDrop={(e) => handleDrop(e, value.id)} onDragOver={handleDragOver}>
-                                <button className='sidebar-button' onClick={() => {setSidebar('playlist'); setPlaylistIndex(index); setFocus(index); console.log(index)}} style={{color: focus === index && sidebar === "playlist" ? 'white': undefined}}>
-                                    <p className='sidebar-playlists'>{value.name}</p>
-                                </button>
-                            </div>
-                        </Tooltip>
-                    )
-                })}
+                <div id="playlist-holder">
+                    {playlist.map((value, index) => {
+                        return(
+                            <Tooltip title="Quick Add to Playlist">
+                                <div key={index} className='sidebar-playlist-div' onDrop={(e) => handleDrop(e, value.id)} onDragOver={handleDragOver}>
+                                    <button className='sidebar-button' onClick={() => {setSidebar('playlist'); setPlaylistIndex(index); setFocus(index); console.log(index)}} style={{color: focus === index && sidebar === "playlist" ? 'white': undefined}}>
+                                        <p className='sidebar-playlists'>{value.name}</p>
+                                    </button>
+                                </div>
+                            </Tooltip>
+                        )
+                    })}
+                </div>
             </div>
         </div>
     );

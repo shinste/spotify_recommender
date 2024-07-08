@@ -239,12 +239,11 @@ h1 {
 
 .Button-hover {
   position: absolute;
-  bottom: -40%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
   display: flex;
-  /* background-color: #838383; */
   justify-content: space-evenly;
   width: 80%;
   border-radius: 12px;
@@ -297,6 +296,8 @@ h1 {
   width: 30px;
   background-color: grey;
   border-radius: 12px;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .pressed {
@@ -498,6 +499,7 @@ h1 {
   margin-left: auto;
   border-radius: 12px;
   margin-top: -80px;
+  padding: 10px;
   /* position: absolute; */
 }
 
@@ -607,4 +609,31 @@ h1 {
   margin-bottom: 0px;
   margin-left: 30px;
   margin-right: 30px;
+}
+
+#playlist-holder{
+  height: 80%;
+  overflow-y: auto;
+}
+
+#playlist-holder::-webkit-scrollbar {
+  display: none;
+}
+
+#link-spotify{
+  font-weight: bold;
+  font-size: 20px;
+}
+
+#important{
+  color: red;
+  margin-top: -100px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.no-data{
+  font-size: 20px;
+  color: whitesmoke;
+  text-align: center;
 }

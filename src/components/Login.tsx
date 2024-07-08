@@ -1,8 +1,7 @@
-
 const Login = () => {
     const CLIENT_ID = "65fc2d5eaa7d475f8dd7bf2b7c98c515";
-    // const REDIRECT_URI = "https://master--songrecommender.netlify.app";
-    const REDIRECT_URI = "http://localhost:3000"
+    const REDIRECT_URI = "https://master--songrecommender.netlify.app";
+    // const REDIRECT_URI = "http://localhost:3000"
 
     const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
     const TYPE = "token";
@@ -15,6 +14,9 @@ const Login = () => {
                 </div>
                 <div id="Gif-holder">
                     <iframe className="No-hover" src="https://giphy.com/embed/mCyRzRJINnNUb62vLb" width="480" height="480" frameBorder="0"></iframe>
+                    <p id='important'>IMPORTANT: Use testing credentials: <span style={{display: 'block', fontWeight: 'bolder'}}>[ username: stephenshin111@gmail.com | password: spotifytesting1 ]</span> if you have not added your email to this whitelist. 
+                    email stephenshin1@hotmail.com for full access with your own account.
+                    </p>
                     <div id="Description-div">
                         <h3 id="Description">Let Spotify know you approve!</h3>
                         <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${TYPE}&scope=user-top-read,user-library-read,user-read-private,user-read-email,playlist-read-private,playlist-modify-public,playlist-modify-private`}>

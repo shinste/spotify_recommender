@@ -41,7 +41,6 @@ const Recommendation: React.FC<RecommendationProps> = ({
     handleAdd,
     playlist
 }) => {
-    const [title, setTitle] = useState(false);
     const recommend = async () => {
         const seedSongs = Object.entries(positions).map(([key, value]) =>
             value.type === "track" && value.seedId).filter(Boolean);
@@ -113,7 +112,6 @@ const Recommendation: React.FC<RecommendationProps> = ({
         if (addRemoveButton && playlistButton) {
             addRemoveButton.hidden = status;
             playlistButton.hidden = status;
-            setTitle(status);
         }
     }
 
@@ -153,7 +151,7 @@ const Recommendation: React.FC<RecommendationProps> = ({
                                     </div>
                                 }
                                 {Object.keys(positions[position]).length > 0 && index === 2 &&
-                                    <div className="Button-recommend" style={{position: 'relative', marginTop: '-20px', padding: !title ? '1px' : '0px'}}>
+                                    <div className="Button-hover">
                                         <button id={'Remove-Add-' + String(index)} hidden style={{backgroundColor: 'grey', borderRadius: '12px'}} onClick={() => handleRemove(position)}>
                                             <img src={Remove} className='Hover-button' alt="" />
                                         </button>
@@ -163,8 +161,7 @@ const Recommendation: React.FC<RecommendationProps> = ({
                                     </div>
                                     
                                 }
-                                {index === 2 && title && <p style={{ color: 'whitesmoke', marginTop: '30px'}}>{positions[position].title}</p>}
-                                {index !== 2 &&<p style={{ color: 'whitesmoke', margin: 0}}>{positions[position].title}</p>}
+                                <p style={{ color: 'whitesmoke', margin: 0}}>{positions[position].title}</p>
                             </div>
                         );
                     })}

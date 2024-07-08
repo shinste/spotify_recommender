@@ -23,7 +23,6 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
     const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
     const divRefs = useRef<(HTMLDivElement | null)[]>([]);
     const [errors, setError] = useState<string[]>([]);
-    const [text, setText] = useState("");
     function scrollContent(direction: string) {
         const container = document.querySelector('#' + reference);
         if (container) {
@@ -110,11 +109,6 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
         if (volumeButton) {
             volumeButton.hidden = status;
         }
-        if (!status) {
-            setText(identifier);
-        } else{
-            setText('');
-        }
     }, []);
 
     const memoizedHandleAdd = useCallback((id: string, title: string, type: string, url: string, uri: string) => {
@@ -135,17 +129,23 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
         }
     }, [mute])
 
+    if (showcase.length === 0) {
+        return (
+            <div style={{width: '100%', textAlign: 'left'}}>
+                <h3 style={{display: 'inline', color: 'whitesmoke'}}>{title}</h3>
+                <p className='no-data'>Sorry, there is not enough data on Spotify for this account to display anything!</p>
+            </div>
+        );
+    }
 
     return (
         <div className="Most-played">   
             <div style={{position: 'relative'}}>
-                
                 <div style={{position: 'relative'}}>
                     <button className='Scroll-left' onClick={() => scrollContent('left')}>&lt;</button>
                     <h3 style={{display: 'inline', color: 'whitesmoke'}}>{title}</h3>
                     <button className='Scroll-right' onClick={() => scrollContent('right')}>&gt;</button>
                 </div>
-                
             </div>
             <div style={{overflowX: 'hidden'}}>
                 <div id={reference} className="Display-container">
@@ -160,6 +160,7 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                         if (item.type === "artist" && item.images.length === 0) {
                             return (<div></div>)
                         }
+
                         return (
                             <div className="Display-div" key={"Display-div" + index}>
                                 {item.type === "track" ?
@@ -195,7 +196,7 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                                         </div>
                                                                         
                                         <div className="Display-p">
-                                            <p style={{marginBottom: 0}}>{text !== (title + String(index)) && songTitle}</p>
+                                            <p style={{marginBottom: 0}}>{songTitle}</p>
                                         </div>
                                         <audio id={item.preview_url} ><source src={item.preview_url} type="audio/mpeg"/></audio>
                                         {errors.includes(item.preview_url) && <p id="Unavailable" >Unavailable Preview</p>}
@@ -217,7 +218,7 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                                             </Tooltip>
                                         </div>
                                         <div className="Display-p">
-                                            <p>{text !== (title + String(index)) && item.name}</p>
+                                            <p>{item.name}</p>
                                         </div>
                                     </div>
                                 }
