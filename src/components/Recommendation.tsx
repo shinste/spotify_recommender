@@ -179,7 +179,7 @@ const Recommendation: React.FC<RecommendationProps> = ({
                         <button className="sidebar-button" onClick={() => setRecommended([])}><h4 className='no-margin'>Clear Recommendations</h4></button>
                     </div>}
                     {recommended.length === 0 &&
-                        <button onClick={recommend} className="py-3 px-4 gap-x-2 mb-5 text-sm font-semibold rounded-lg border border-transparent bg-purple-600 text-white hover:bg-purple-700">
+                        <button onClick={recommend} className="py-3 px-4 gap-x-2 mb-5 mt-5 text-sm font-semibold rounded-lg border border-transparent bg-purple-600 text-white hover:bg-purple-700">
                             Create Recommendation
                         </button>
                     }

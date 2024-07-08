@@ -219,7 +219,7 @@ const Home: React.FC = () => {
             <SideBar sidebar={sidebar} setSidebar={setSidebar} username={personal.username} playlist={playlists} setPlaylistIndex={setPlaylistIndex} handleSendPlaylist={handleSendPlaylist}/>
             <div style={{width: '100%'}}>
                 {error && 
-                    <div id="dismiss-alert" className="bg-red-50 border border-red-200 text-sm text-red-800 rounded-lg p-4 dark:bg-red-800/10 dark:border-red-900" role="alert" >
+                    <div id="dismiss-alert" className="bg-red-50 border border-red-200 text-sm text-black-800 rounded-lg p-4 dark:bg-red-800/50 dark:border-red-900" role="alert" >
                         {error}
                     <button className="ml-3 dismissButton" onClick={() => setError('')}>X</button>
                 </div>}
