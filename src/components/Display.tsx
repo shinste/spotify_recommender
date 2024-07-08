@@ -164,6 +164,7 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                             <div className="Display-div" key={"Display-div" + index}>
                                 {item.type === "track" ?
                                     <div 
+                                        style={{position: 'relative', height: '70%'}}
                                         draggable
                                         onDragStart={(e) => handleDrag(e, item.id, songTitle, item.type, item.album.images[0].url, item.uri)}
                                         ref={el => divRefs.current[index] = el}
@@ -201,6 +202,7 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                                     </div>
                                     :
                                     <div
+                                        style={{position: 'relative'}}
                                         draggable
                                         onDragStart={(e) => handleDrag(e, item.id, item.name, item.type, item.images[0].url, item.uri)}
                                         onMouseEnter={() => handleHover(title + String(index), false)}

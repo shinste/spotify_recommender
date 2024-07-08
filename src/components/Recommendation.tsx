@@ -153,7 +153,7 @@ const Recommendation: React.FC<RecommendationProps> = ({
                                     </div>
                                 }
                                 {Object.keys(positions[position]).length > 0 && index === 2 &&
-                                    <div className="Button-hover" style={{position: 'relative', marginTop: '20px', padding: !title ? '1px' : '0px'}}>
+                                    <div className="Button-recommend" style={{position: 'relative', marginTop: '-20px', padding: !title ? '1px' : '0px'}}>
                                         <button id={'Remove-Add-' + String(index)} hidden style={{backgroundColor: 'grey', borderRadius: '12px'}} onClick={() => handleRemove(position)}>
                                             <img src={Remove} className='Hover-button' alt="" />
                                         </button>
@@ -163,7 +163,7 @@ const Recommendation: React.FC<RecommendationProps> = ({
                                     </div>
                                     
                                 }
-                                {index === 2 && title && <p style={{ color: 'whitesmoke', margin: 0}}>{positions[position].title}</p>}
+                                {index === 2 && title && <p style={{ color: 'whitesmoke', marginTop: '30px'}}>{positions[position].title}</p>}
                                 {index !== 2 &&<p style={{ color: 'whitesmoke', margin: 0}}>{positions[position].title}</p>}
                             </div>
                         );

@@ -239,7 +239,20 @@ h1 {
 
 .Button-hover {
   position: absolute;
-  bottom: 0%;
+  bottom: -40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  display: flex;
+  /* background-color: #838383; */
+  justify-content: space-evenly;
+  width: 80%;
+  border-radius: 12px;
+}
+
+.Button-recommend {
+  position: absolute;
+  bottom: -30%;
   left: 50%;
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
@@ -283,7 +296,7 @@ h1 {
   margin-top: 20px;
   width: 30px;
   background-color: grey;
-
+  border-radius: 12px;
 }
 
 .pressed {
