@@ -650,3 +650,12 @@ h1 {
   color: whitesmoke;
   text-align: center;
 }
+
+#scroll {
+  overflow-x: auto;
+}
+
+#scroll::-webkit-scrollbar {
+  display: none;
+}
+

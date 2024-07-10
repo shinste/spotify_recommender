@@ -147,7 +147,7 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                     <button className='Scroll-right' onClick={() => scrollContent('right')}>&gt;</button>
                 </div>
             </div>
-            <div style={{overflowX: 'hidden'}}>
+            <div id="scroll">
                 <div id={reference} className="Display-container">
                     {showcase && showcase.map((item, index) => {
                         if (title === "Saved Songs" || item.added_at) {
