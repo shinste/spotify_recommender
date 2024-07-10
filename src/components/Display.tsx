@@ -140,12 +140,10 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
 
     return (
         <div className="Most-played">   
-            <div style={{position: 'relative'}}>
-                <div style={{position: 'relative'}}>
-                    <button className='Scroll-left' onClick={() => scrollContent('left')}>&lt;</button>
-                    <h3 style={{display: 'inline', color: 'whitesmoke'}}>{title}</h3>
-                    <button className='Scroll-right' onClick={() => scrollContent('right')}>&gt;</button>
-                </div>
+            <div style={{position: 'relative', textAlign: 'left'}}>
+                <button className='Scroll-left' onClick={() => scrollContent('left')}>&lt;</button>
+                <h3 style={{display: 'inline', color: 'whitesmoke'}}>{title}</h3>
+                <button className='Scroll-right' onClick={() => scrollContent('right')}>&gt;</button>
             </div>
             <div id="scroll">
                 <div id={reference} className="Display-container">

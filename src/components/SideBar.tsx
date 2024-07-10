@@ -9,10 +9,9 @@ interface SideBarComponents {
     username: string,
     playlist: any[],
     handleSendPlaylist: (id: string, name: string, uri: string) => void,
-    setPlaylistIndex: React.Dispatch<React.SetStateAction<number | null>>
+    handleSideBarClick: (index: number) => void
 }
-const SideBar: React.FC<SideBarComponents> = ({sidebar, setSidebar, username, playlist, handleSendPlaylist, setPlaylistIndex}) => {
-    console.log(playlist);
+const SideBar: React.FC<SideBarComponents> = ({sidebar, setSidebar, username, playlist, handleSendPlaylist, handleSideBarClick}) => {
     const [focus, setFocus] = useState<number | null>(null)
     const handleDrop = (e: React.DragEvent, playlistId: string) => {
         const songTitle = e.dataTransfer.getData('title') as string;
@@ -56,9 +55,9 @@ const SideBar: React.FC<SideBarComponents> = ({sidebar, setSidebar, username, pl
                 <div id="playlist-holder">
                     {playlist.map((value, index) => {
                         return(
-                            <Tooltip title="Quick Add to Playlist">
-                                <div key={index} className='sidebar-playlist-div' onDrop={(e) => handleDrop(e, value.id)} onDragOver={handleDragOver}>
-                                    <button className='sidebar-button' onClick={() => {setSidebar('playlist'); setPlaylistIndex(index); setFocus(index); console.log(index)}} style={{color: focus === index && sidebar === "playlist" ? 'white': undefined}}>
+                            <Tooltip key={index} title="Quick Add to Playlist">
+                                <div className='sidebar-playlist-div' onDrop={(e) => handleDrop(e, value.id)} onDragOver={handleDragOver}>
+                                    <button className='sidebar-button' onClick={() => {setSidebar('playlist'); handleSideBarClick(index); setFocus(index);}} style={{color: focus === index && sidebar === "playlist" ? 'white': undefined}}>
                                         <p className='sidebar-playlists'>{value.name}</p>
                                     </button>
                                 </div>

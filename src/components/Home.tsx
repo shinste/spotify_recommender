@@ -33,8 +33,9 @@ const Home: React.FC = () => {
     const [name, setName] = useState('');
     const [sidebar, setSidebar] = useState('home');
     const [playlistIndex, setPlaylistIndex] = useState<number | null>(null);
-
+    const [playlistDisplay , setPlaylistDisplay] = useState<{[key: string] : any[]}>({});
     const playlistDivRef = useRef<HTMLDivElement>(null);
+    const [displayOrder, setDisplayOrder] = useState<number[]>([]);
 
     useEffect(() => {
         const hash = window.location.hash;
@@ -52,7 +53,7 @@ const Home: React.FC = () => {
             setToken(token);
             spotifyAPI('me/top/tracks', {limit: 20}, setTopSongs, token);
             spotifyAPI('me/top/artists', {limit: 20}, setTopArtists, token);
-            spotifyAPI('me/tracks', {limit: 30}, setSavedSongs, token);
+            spotifyAPI('me/tracks', {limit: 40}, setSavedSongs, token);
             spotifyAPI('me/playlists', {limit: 30}, setPlaylists, token);
             spotifyAPI('me', {}, console.log , token);
         } 
@@ -94,7 +95,6 @@ const Home: React.FC = () => {
             }
             window.removeEventListener('click', handleClickOutside);
         } else {
-            console.log(id, name, uri, 'checking');
             spotifyAPI(`playlists/${id}/tracks`,{uris: [uri], position: 0}, setPlaylists, undefined, name, true);
         }
     }
@@ -124,7 +124,6 @@ const Home: React.FC = () => {
                     
                 }
             } else {
-                console.log(query, 'api check');
                 const {data} = await axios.get(`https://api.spotify.com/v1/${query}`, {
                 headers: {
                     Authorization: `Bearer ${access}`
@@ -200,6 +199,40 @@ const Home: React.FC = () => {
         }
     }
 
+    const handleSideBarClick = (index: number) => {
+        setPlaylistIndex(index);
+        setSelected('Playlists');
+        scrollToPlaylist(String(index));
+    }
+
+    const handlePlaylistFetch= async () => {
+        try {
+            if (playlistIndex){
+                if (!Object.keys(playlistDisplay).includes(String(playlistIndex))) {
+                    const {data} = await axios.get(`https://api.spotify.com/v1/playlists/${playlists[playlistIndex].id}`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        },
+                        params: {limit: 40}
+                    })
+                    setPlaylistDisplay((prevPlaylistDisplay) => ({
+                        [playlistIndex] : data.tracks.items,
+                        ...prevPlaylistDisplay,
+                    }));
+                    setDisplayOrder([playlistIndex, ...displayOrder]);
+                }
+                scrollToPlaylist(String(playlistIndex));
+
+            }
+        } catch(error) {
+            console.log(error);
+        }
+    }
+
+    const scrollToPlaylist = (index: string) => {
+        document.querySelector(`#playlistDisplay${index}`)
+          ?.scrollIntoView({ block: "center", behavior: "smooth" });
+    }
     useEffect(() => {
         if (sidebar === "logout") {
             setToken('');
@@ -209,6 +242,12 @@ const Home: React.FC = () => {
         }
     }, [sidebar])
 
+    useEffect(() => {
+        if (sidebar === "playlist" && playlistIndex) {
+            handlePlaylistFetch();
+        }
+    }, [playlistIndex])
+
     if (!token) {
         return (
             <Login/>
@@ -216,9 +255,7 @@ const Home: React.FC = () => {
     }
     return (
         <body className="Body-main Flex">
-                        {/* <div style={{backgroundColor: '#FFFFFF', height: '100vh', width: '80px', zIndex: 3}}>SDFDS</div> */}
-
-            <SideBar sidebar={sidebar} setSidebar={setSidebar} username={personal.username} playlist={playlists} setPlaylistIndex={setPlaylistIndex} handleSendPlaylist={handleSendPlaylist}/>
+            <SideBar sidebar={sidebar} setSidebar={setSidebar} username={personal.username} playlist={playlists} handleSideBarClick={handleSideBarClick} handleSendPlaylist={handleSendPlaylist}/>
             <div id="Not-sidebar">
                 {error && 
                     <div id="dismiss-alert" className="bg-red-50 border border-red-200 text-sm text-black-800 rounded-lg p-4 dark:bg-red-800/50 dark:border-red-900" role="alert" >
@@ -234,12 +271,20 @@ const Home: React.FC = () => {
                 <Recommendation token={token} order={order} setOrder={setOrder} allIds={allIds} positions={positions} setPositions={setPositions} setAllIds={setAllIds} recommended={recommended} setRecommended={setRecommended} setSelected={setSelected} mute={mute} setMute={setMute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd} playlist={playlistIndex ? playlists[playlistIndex].name : ''}/>
                 
                 <div id="scroll-main">
-                    {/* {sidebar !== "search" && sidebar !== "home" && sidebar !== 'logout' && <Display showcase={displayPlaylist} title={`Playlist: ${playlistName}`} reference={'topsongs'} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd}/>} */}
                     {sidebar !== 'search' && <Select setSelected={setSelected} selected={selected} setSidebar={setSidebar}/>}
                     {sidebar === 'search' && 
                         <Search spotifyAPI={spotifyAPI} setSearchSongs={setSearchSongs} setSearchArtists={setSearchArtists} searchCategory={searchCategory} setSearchCategory={setSearchCategory}/>         
                     }
                     <div className="Vertical-flex Main">
+                        {selected === "Playlists" && playlistIndex && playlistDisplay[playlistIndex] && 
+                        displayOrder.map((value)=>{
+                            return (
+                                <div key={playlists[Number(value)].id} id={'playlistDisplay' + value}>
+                                    <Display showcase={playlistDisplay[Number(value)]} title={playlists[Number(value)].name} reference={'playlistdisplay' + value} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd} playlist={playlistIndex ? playlists[playlistIndex].name : ''}/>
+                                </div>
+                            )
+                        }
+                        )}
                         {(searchSongs.length > 0 && searchCategory === "track" && (selected === "All" || selected === 'Search')) && <Display showcase={searchSongs} title={'Song Search Results'} setMute={setMute} mute={mute} reference={'songsearchresults'} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd} playlist={playlistIndex ? playlists[playlistIndex].name : ''}/>}
                         {(selected === "All" || selected === 'Most') && (sidebar !== 'search') && <Display showcase={topSongs} title={'Most Played Songs'} reference={'topsongs'} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd} playlist={playlistIndex ? playlists[playlistIndex].name : ''}/>}
                         {(selected === "All" || selected === 'Top') && (sidebar !== 'search') && <Display showcase={topArtists} title={'Your Top Artists'} reference={'topartists'} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd} playlist={playlistIndex ? playlists[playlistIndex].name : ''}/>}
