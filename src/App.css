@@ -51,7 +51,7 @@
   width: 100vw;
   /* background-image: linear-gradient(#5627EF, white); */
   background-color: #120F0F;
-  overflow-y: hidden;
+  overflow-y: auto;
   overflow-x: hidden;
   box-sizing: border-box;
 }
@@ -63,7 +63,6 @@ h1 {
 
 #scroll-main{
   height: 500px;
-  overflow-y: scroll;
   padding-right: 150px;
   margin-left: 8%;
 }
