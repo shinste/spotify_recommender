@@ -216,8 +216,10 @@ const Home: React.FC = () => {
     }
     return (
         <body className="Body-main Flex">
+                        {/* <div style={{backgroundColor: '#FFFFFF', height: '100vh', width: '80px', zIndex: 3}}>SDFDS</div> */}
+
             <SideBar sidebar={sidebar} setSidebar={setSidebar} username={personal.username} playlist={playlists} setPlaylistIndex={setPlaylistIndex} handleSendPlaylist={handleSendPlaylist}/>
-            <div style={{width: '100%'}}>
+            <div id="Not-sidebar">
                 {error && 
                     <div id="dismiss-alert" className="bg-red-50 border border-red-200 text-sm text-black-800 rounded-lg p-4 dark:bg-red-800/50 dark:border-red-900" role="alert" >
                         {error}
