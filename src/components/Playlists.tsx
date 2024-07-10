@@ -3,7 +3,7 @@ interface PlaylistsProps {
     playlistDivRef: React.RefObject<HTMLDivElement>,
     playlists: any[],
     personal: {[key: string]: string}
-    handleSendPlaylist: (id: string, name: string) => void
+    handleSendPlaylist: (id: string, name: string, index: number, uri?: string) => void
 }
 
 const Playlists: React.FC<PlaylistsProps> = ({name, playlistDivRef, playlists, personal, handleSendPlaylist}) => {
@@ -16,7 +16,7 @@ const Playlists: React.FC<PlaylistsProps> = ({name, playlistDivRef, playlists, p
                     return (
                         <div key={"playlists" + index} className="Playlist-content">
                             <img className="Playlist-img" src={item.images[0].url} alt=""/>
-                            <button className="Playlist-button" onClick={() => {handleSendPlaylist(item.id, item.name)}}>
+                            <button className="Playlist-button" onClick={() => {handleSendPlaylist(item.id, item.name, index)}}>
                                 <h2 className="Playlist-name">
                                     {item.name}
                                 </h2>  

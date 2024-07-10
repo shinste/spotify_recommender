@@ -70,9 +70,14 @@ const Home: React.FC = () => {
         }
     };
     
+    // sending to playlist through direct playlist focus or bringing up the playlist component
     const handleButtonClick = (uri: string, e: React.MouseEvent<HTMLButtonElement, MouseEvent>, name: string) => {
         if (playlistIndex) {
             spotifyAPI(`playlists/${playlists[playlistIndex].id}/tracks`,{uris: [uri], position: 0}, setPlaylists, undefined, name, true);
+            setTimeout(function() {
+                handlePlaylistFetch(playlists[playlistIndex].id, playlistIndex);
+                console.log(playlists[playlistIndex].id, playlistIndex, 'playlist select')
+            }, 100);
         } else {
             e.stopPropagation();
             setAddPlaylist(uri);
@@ -86,9 +91,13 @@ const Home: React.FC = () => {
         }
     };
     
-    const handleSendPlaylist = (id: string, name: string, uri?: string) => {
+    // sending to playlist through playlist component or dragging
+    const handleSendPlaylist = (id: string, name: string, index: number, uri?: string) => {
         if (!uri) {
             spotifyAPI(`playlists/${id}/tracks`,{uris: [addPlaylist], position: 0}, setPlaylists, undefined, name, true);
+            setTimeout(function() {
+                handlePlaylistFetch(id, index);
+            }, 100);
             setAddPlaylist('');
             if (playlistDivRef.current) {
                 playlistDivRef.current.style.display = 'none';
@@ -97,6 +106,9 @@ const Home: React.FC = () => {
         } else {
             spotifyAPI(`playlists/${id}/tracks`,{uris: [uri], position: 0}, setPlaylists, undefined, name, true);
         }
+        setTimeout(function() {
+            handlePlaylistFetch(id, index);
+        }, 3000);
     }
 
 
@@ -205,24 +217,33 @@ const Home: React.FC = () => {
         scrollToPlaylist(String(index));
     }
 
-    const handlePlaylistFetch= async () => {
+    const handlePlaylistFetch= async (update?: string, index?: number) => {
         try {
-            if (playlistIndex){
-                if (!Object.keys(playlistDisplay).includes(String(playlistIndex))) {
-                    const {data} = await axios.get(`https://api.spotify.com/v1/playlists/${playlists[playlistIndex].id}`, {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        },
-                        params: {limit: 40}
-                    })
+            if ((playlistIndex && !Object.keys(playlistDisplay).includes(String(playlistIndex))) || update) {
+                const {data} = await axios.get(`https://api.spotify.com/v1/playlists/${playlistIndex && !update ? playlists[playlistIndex].id: update}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                    params: {limit: 40}
+                })
+                if (update) {
+                    setPlaylistDisplay(Object.fromEntries(
+                        Object.entries(playlistDisplay).map(([key, value]) =>
+                            key === String(index) ? [key, data.tracks.items] : [key, value]
+                        )
+                    ));
+
+                    setDisplayOrder([...displayOrder]);
+                } else if (playlistIndex) {
                     setPlaylistDisplay((prevPlaylistDisplay) => ({
                         [playlistIndex] : data.tracks.items,
                         ...prevPlaylistDisplay,
                     }));
                     setDisplayOrder([playlistIndex, ...displayOrder]);
                 }
+            }
+            if (!update) {
                 scrollToPlaylist(String(playlistIndex));
-
             }
         } catch(error) {
             console.log(error);
@@ -239,6 +260,9 @@ const Home: React.FC = () => {
         }
         if (sidebar !== "playlist" && playlistIndex) {
             setPlaylistIndex(null);
+        }
+        if (sidebar === "home") {
+            setSelected('All');
         }
     }, [sidebar])
 
@@ -276,7 +300,7 @@ const Home: React.FC = () => {
                         <Search spotifyAPI={spotifyAPI} setSearchSongs={setSearchSongs} setSearchArtists={setSearchArtists} searchCategory={searchCategory} setSearchCategory={setSearchCategory}/>         
                     }
                     <div className="Vertical-flex Main">
-                        {selected === "Playlists" && playlistIndex && playlistDisplay[playlistIndex] && 
+                        {selected === "Playlists" && Object.keys(playlistDisplay).length > 0 && 
                         displayOrder.map((value)=>{
                             return (
                                 <div key={playlists[Number(value)].id} id={'playlistDisplay' + value}>

@@ -8,15 +8,15 @@ interface SideBarComponents {
     setSidebar: React.Dispatch<React.SetStateAction<string>>,
     username: string,
     playlist: any[],
-    handleSendPlaylist: (id: string, name: string, uri: string) => void,
+    handleSendPlaylist: (id: string, name: string, index: number, uri: string) => void,
     handleSideBarClick: (index: number) => void
 }
 const SideBar: React.FC<SideBarComponents> = ({sidebar, setSidebar, username, playlist, handleSendPlaylist, handleSideBarClick}) => {
     const [focus, setFocus] = useState<number | null>(null)
-    const handleDrop = (e: React.DragEvent, playlistId: string) => {
+    const handleDrop = (e: React.DragEvent, playlistId: string, playlistIndex: number) => {
         const songTitle = e.dataTransfer.getData('title') as string;
         const songUri = e.dataTransfer.getData('uri') as string;
-        handleSendPlaylist(playlistId, songTitle, songUri);
+        handleSendPlaylist(playlistId, songTitle, playlistIndex, songUri);
     }
 
     const handleDragOver = (e: React.DragEvent) => {
@@ -56,7 +56,7 @@ const SideBar: React.FC<SideBarComponents> = ({sidebar, setSidebar, username, pl
                     {playlist.map((value, index) => {
                         return(
                             <Tooltip key={index} title="Quick Add to Playlist">
-                                <div className='sidebar-playlist-div' onDrop={(e) => handleDrop(e, value.id)} onDragOver={handleDragOver}>
+                                <div className='sidebar-playlist-div' onDrop={(e) => handleDrop(e, value.id, index)} onDragOver={handleDragOver}>
                                     <button className='sidebar-button' onClick={() => {setSidebar('playlist'); handleSideBarClick(index); setFocus(index);}} style={{color: focus === index && sidebar === "playlist" ? 'white': undefined}}>
                                         <p className='sidebar-playlists'>{value.name}</p>
                                     </button>
