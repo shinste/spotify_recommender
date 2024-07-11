@@ -11,7 +11,6 @@ import SideBar from "./SideBar";
 
 // Home Component
 const Home: React.FC = () => {
-
     const [token, setToken] = useState('');
     const [personal, setPersonal] = useState<{[key: string]: string}>({username: '', id: ''})
     const [topArtists, setTopArtists] = useState<any[]>([]);
