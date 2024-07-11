@@ -574,6 +574,7 @@ h1 {
 #side-bar-margins{
   margin-top: 30px;
   position: fixed;
+  width: 13vw;
 }
 
 .sidebar-button{
@@ -605,6 +606,7 @@ h1 {
 .sidebar-playlist-div{
   text-align: left;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .horizontal-center{
