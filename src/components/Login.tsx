@@ -14,7 +14,7 @@ const Login = () => {
                 </div>
                 <div id="Gif-holder">
                     <iframe className="No-hover" src="https://giphy.com/embed/mCyRzRJINnNUb62vLb" width="480" height="480" frameBorder="0"></iframe>
-                    <p id='important'>IMPORTANT: Use testing credentials: <span style={{display: 'block', fontWeight: 'bolder'}}>[ username: stephenshin111@gmail.com | password: spotifytesting1 ]</span> if you have not added your email to this whitelist. 
+                    <p id='important'>IMPORTANT: Use testing credentials: <span style={{display: 'block', fontWeight: 'bolder'}}>[ username: stephenshin111@gmail.com | password: spotifytesting1! ]</span> if you have not added your email to this whitelist. 
                     email stephenshin1@hotmail.com for full access with your own account.
                     </p>
                     <div id="Description-div">
