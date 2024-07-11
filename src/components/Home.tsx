@@ -38,8 +38,8 @@ const Home: React.FC = () => {
 
     useEffect(() => {
         const hash = window.location.hash;
-        let token: string | undefined | null = window.localStorage.getItem("token");
-        // let token: string | undefined | null
+        // let token: string | undefined | null = window.localStorage.getItem("token");
+        let token: string | undefined | null
         if (!token && hash) {
             token = hash.substring(1).split('&').find(elem => elem.startsWith('access_token'))?.split('=')[1];
             window.location.hash = ""
