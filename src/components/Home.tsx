@@ -211,19 +211,24 @@ const Home: React.FC = () => {
     }
 
     const handleSideBarClick = (index: number) => {
+        console.log(index, playlistIndex, 'add index');
         setPlaylistIndex(index);
         setSelected('Playlists');
         scrollToPlaylist(String(index));
     }
 
-    const handlePlaylistFetch= async (update?: string, index?: number) => {
+    const handlePlaylistFetch = async (update?: string, index?: number) => {
+        console.log(playlistIndex, 'should fetch');
         try {
-            if ((playlistIndex && !Object.keys(playlistDisplay).includes(String(playlistIndex))) || update) {
-                const {data} = await axios.get(`https://api.spotify.com/v1/playlists/${playlistIndex && !update ? playlists[playlistIndex].id: update}`, {
+            if ((playlistIndex !== null && !Object.keys(playlistDisplay).includes(String(playlistIndex))) || update) {
+                const {data} = await axios.get(`https://api.spotify.com/v1/playlists/${playlistIndex !== null && !update ? playlists[playlistIndex].id: update}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     },
-                    params: {limit: 40}
+                    params: {
+                        limit: 50,
+                        fields: 'fields=items(added_by.id,track(name,href,album(name,href)))'
+                    }
                 })
                 if (update) {
                     setPlaylistDisplay(Object.fromEntries(
@@ -233,7 +238,7 @@ const Home: React.FC = () => {
                     ));
 
                     setDisplayOrder([...displayOrder]);
-                } else if (playlistIndex) {
+                } else if (playlistIndex !== null) {
                     setPlaylistDisplay((prevPlaylistDisplay) => ({
                         [playlistIndex] : data.tracks.items,
                         ...prevPlaylistDisplay,
@@ -266,7 +271,7 @@ const Home: React.FC = () => {
     }, [sidebar])
 
     useEffect(() => {
-        if (sidebar === "playlist" && playlistIndex) {
+        if (sidebar === "playlist" && playlistIndex !== null) {
             handlePlaylistFetch();
         }
     }, [playlistIndex])
