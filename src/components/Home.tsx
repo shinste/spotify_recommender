@@ -226,8 +226,7 @@ const Home: React.FC = () => {
                         Authorization: `Bearer ${token}`
                     },
                     params: {
-                        limit: 50,
-                        fields: 'fields=items(added_by.id,track(name,href,album(name,href)))'
+                        limit: 60,                        
                     }
                 })
                 if (update) {
