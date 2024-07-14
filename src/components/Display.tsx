@@ -23,6 +23,7 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
     const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
     const divRefs = useRef<(HTMLDivElement | null)[]>([]);
     const [errors, setError] = useState<string[]>([]);
+    const [previews, setPreviews] = useState<string[]>([]);
     function scrollContent(direction: string) {
         const container = document.querySelector('#' + reference);
         if (container) {
@@ -40,16 +41,15 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
             }
         }   
     }
-
     const handlePreview = useCallback((url: string, divHover: HTMLElement | null) => {
         const audioPlayer = document.getElementById(url) as HTMLAudioElement;
         let hoverTimer: NodeJS.Timeout | null = null;
         if (audioPlayer === null) {
             setError([...errors, url]);
-        } else {
+        } else if (!previews.includes(url)) {
+            setPreviews([...previews, url])
             divHover?.addEventListener('mouseenter', () => {
             hoverTimer = setTimeout(() => {
-
                 if (audioPlayer !== currentAudio) {
                     currentAudio?.pause();
                 }
@@ -58,7 +58,6 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                 } else {
                     audioPlayer.volume = 0;
                 }
-                
                 setCurrentAudio(audioPlayer);
                 var isPlaying = audioPlayer.currentTime > 0 && !audioPlayer.paused && !audioPlayer.ended && audioPlayer.readyState > audioPlayer.HAVE_CURRENT_DATA;
                 if (!isPlaying) {
@@ -71,24 +70,26 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                             console.log(error);
                         });
                 }
-                
+               
                 }
-                
+               
             }, 1000);
             });
         }
-        
-
-        divHover?.addEventListener('mouseleave', () => {
-            if (hoverTimer) {
-                clearTimeout(hoverTimer);
-                hoverTimer = null;
-            }
-            if (audioPlayer) {
-                audioPlayer.pause();
-            }
-        });
+       
+        if (!previews.includes(url)) {
+            divHover?.addEventListener('mouseleave', () => {
+                if (hoverTimer) {
+                    clearTimeout(hoverTimer);
+                    hoverTimer = null;
+                }
+                if (audioPlayer) {
+                    audioPlayer.pause();
+                }
+            });
+        }
     }, [errors, currentAudio, mute]);
+
 
     const handleHover = useCallback((identifier: string, status: boolean) => {
         const removeButton = document.getElementById('Add-' + identifier);
@@ -160,7 +161,7 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                         }
 
                         return (
-                            <div className="Display-div" key={"Display-div" + index}>
+                            <div className="Display-div">
                                 {item.type === "track" ?
                                     <div 
                                         style={{position: 'relative', height: '70%'}}
@@ -186,17 +187,16 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                                                 </button>
                                             </Tooltip>
                                             <Tooltip title={`Add Track to ${ playlist ? playlist : 'Playlist'}`}>
-                                                <button onClick={(e) => handleButtonClick(item.uri, e, item.name)} hidden id={'Playlist-below-' + title + String(index)} style={{marginLeft: title !== 'Recommended Songs' ? '15px' : 0, backgroundColor: 'grey', borderRadius: '12px'}} >
+                                                <button onClick={(e) => handleButtonClick(item.uri, e, item.name)} hidden id={'Playlist-below-' + title + String(index)} style={{marginLeft: '15px', backgroundColor: 'grey', borderRadius: '12px'}} >
                                                     <img src={Playlist} className="Hover-button" alt=""/>
                                                 </button>
                                             </Tooltip>
-
                                         </div>
                                                                         
                                         <div className="Display-p">
                                             <p style={{marginBottom: 0}}>{songTitle}</p>
                                         </div>
-                                        <audio id={item.preview_url} ><source src={item.preview_url} type="audio/mpeg"/></audio>
+                                        <audio id={item.preview_url}><source src={item.preview_url} type="audio/mpeg"/></audio>
                                         {errors.includes(item.preview_url) && <p id="Unavailable" >Unavailable Preview</p>}
                                     </div>
                                     :

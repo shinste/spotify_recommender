@@ -187,7 +187,7 @@ const Recommendation: React.FC<RecommendationProps> = ({
                         {recommended.length > 0 && <Display showcase={recommended} title={'Recommended Songs'} reference={'recommended'} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd} playlist={playlist}/>}
                     </div>
                     {recommended.length > 0 &&
-                        <button onClick={recommend} className="py-3 px-4 gap-x-2 mb-5 text-sm font-semibold rounded-lg border border-transparent bg-purple-600 text-white hover:bg-purple-700">
+                        <button onClick={() => {setRecommended([]); recommend()}} className="py-3 px-4 gap-x-2 mb-5 text-sm font-semibold rounded-lg border border-transparent bg-purple-600 text-white hover:bg-purple-700">
                             Generate New Recommendations
                         </button>
                     }

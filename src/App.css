@@ -303,7 +303,7 @@ h1 {
 }
 
 .Volume-button{
-  margin-top: 20px;
+  /* margin-top: 20px; */
   width: 30px;
   background-color: grey;
   border-radius: 12px;
