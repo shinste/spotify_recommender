@@ -116,6 +116,13 @@ const Home: React.FC = () => {
         if (temp) {
             access = temp;
         }
+        if (query === 'search') {
+            if (Object.values(params).includes('track')) {
+                setSearchSongs([]);
+            } else {
+                setSearchArtists([]);
+            }
+        }
         try {
             if (post) {
                 const response = await axios.post(`https://api.spotify.com/v1/${query}`,
