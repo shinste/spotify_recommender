@@ -58,14 +58,15 @@ const HomePage: React.FC = () => {
         } 
     }, []);    
 
+    // When clicked outside of playlist box, it disappears
     const handleClickOutside = (e: MouseEvent) => {
         const target = e.target as Node;
         if (playlistDivRef.current && playlistDivRef.current.contains(target)) {
         } else {
-          if (playlistDivRef.current) {
-            playlistDivRef.current.style.display = 'none';
-          }
-          window.removeEventListener('click', handleClickOutside);
+            if (playlistDivRef.current) {
+                playlistDivRef.current.style.display = 'none';
+            }
+            window.removeEventListener('click', handleClickOutside);
         }
     };
     
@@ -75,7 +76,6 @@ const HomePage: React.FC = () => {
             spotifyAPI(`playlists/${playlists[playlistIndex].id}/tracks`,{uris: [uri], position: 0}, setPlaylists, undefined, name, true);
             setTimeout(function() {
                 handlePlaylistFetch(playlists[playlistIndex].id, playlistIndex);
-                console.log(playlists[playlistIndex].id, playlistIndex, 'playlist select')
             }, 100);
         } else {
             e.stopPropagation();
@@ -84,9 +84,9 @@ const HomePage: React.FC = () => {
             if (playlistDivRef.current) {
                 playlistDivRef.current.style.display = 'block';
             }
-                if (playlistDivRef.current && playlistDivRef.current.style.display === 'block') {
-                    window.addEventListener('click', handleClickOutside);
-                }
+            if (playlistDivRef.current && playlistDivRef.current.style.display === 'block') {
+                window.addEventListener('click', handleClickOutside);
+            }
         }
     };
     
@@ -106,11 +106,12 @@ const HomePage: React.FC = () => {
             spotifyAPI(`playlists/${id}/tracks`,{uris: [uri], position: 0}, setPlaylists, undefined, name, true);
         }
         setTimeout(function() {
+            // Updates the playlist items display
             handlePlaylistFetch(id, index);
         }, 3000);
     }
 
-
+    // Bulk of APIs being sent to Spotify, then sets data accordingly
     const spotifyAPI = async (query: string, params: object, set: React.Dispatch<React.SetStateAction<any[]>>, temp?: string, playlistName?: string, post?: boolean) => {
         let access: string = token;
         if (temp) {
@@ -128,9 +129,9 @@ const HomePage: React.FC = () => {
                 const response = await axios.post(`https://api.spotify.com/v1/${query}`,
                     params,
                     {
-                    headers: {
-                        Authorization: `Bearer ${access}`,
-                    },
+                        headers: {
+                            Authorization: `Bearer ${access}`,
+                        },
                     }
                 )
                 if (response.status === 200 || response.status === 201) {
@@ -142,10 +143,10 @@ const HomePage: React.FC = () => {
                 }
             } else {
                 const {data} = await axios.get(`https://api.spotify.com/v1/${query}`, {
-                headers: {
-                    Authorization: `Bearer ${access}`
-                },
-                params: params
+                    headers: {
+                        Authorization: `Bearer ${access}`
+                    },
+                    params: params
                 })
                 if (query === 'me') {
                     const personalData = Object.fromEntries(
@@ -162,7 +163,6 @@ const HomePage: React.FC = () => {
                         } else {
                             set(data.artists.items); 
                         }
-                        
                     } else {
                         set(data.items);
                     }
@@ -177,119 +177,132 @@ const HomePage: React.FC = () => {
         }
     }
 
+    // Grabs minimal playlist information
     const getPlaylists = async (token: string) => {
-        try {
-            const {data} = await axios.get('https://api.spotify.com/v1/me/playlists', {
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
-            })
-            setPlaylists(data.items);
-        } catch(error) {
-            console.log(error);
-        }
-    }
+      try {
+          const { data } = await axios.get('https://api.spotify.com/v1/me/playlists', {
+              headers: {
+                  Authorization: `Bearer ${token}`
+              },
+          });
+          setPlaylists(data.items);
+      } catch (error) {
+          console.log(error);
+      }
+  };
 
-    function handleDrag(e: React.DragEvent, id: string, title: string, type: string, image: string, uri: string) {
-        e.dataTransfer.setData('title', title);
-        e.dataTransfer.setData('image', image);
-        e.dataTransfer.setData('id', id);
-        e.dataTransfer.setData('type', type);
-        e.dataTransfer.setData('uri', uri);
-    }
+  // Will prepare transfer of data upon dragging
+  function handleDrag(e: React.DragEvent, id: string, title: string, type: string, image: string, uri: string) {
+      e.dataTransfer.setData('title', title);
+      e.dataTransfer.setData('image', image);
+      e.dataTransfer.setData('id', id);
+      e.dataTransfer.setData('type', type);
+      e.dataTransfer.setData('uri', uri);
+  }
 
-    const handleAdd = (id: string, title: string, type: string, url: string, uri: string) => {
-        const middleSlot = order[2];
-        const openSlots = order.filter((value) => 
-            Object.keys(positions[value]).length === 0
-        )
-        if (allIds.includes(id)) {
-            setError('This track/artist is already added!');
-        } else if (!openSlots[0]) {
-            setError('You have reached your max number of tracks/artists!');
-        } else {
-            let insertSlot = openSlots[0];
-            if (openSlots.includes(middleSlot)) {
-                insertSlot = middleSlot;
-            }
-            setPositions(Object.fromEntries(
-                Object.entries(positions).map(([key, value]) => 
-                key === insertSlot ? [key, {url: url, seedId: id, type: type, title: title, uri: uri}] : [key, value]
-            )))
-            setAllIds([...allIds, id]);
-        }
-    }
+  // Adding a track or artist to seed songs/artist
+  const handleAdd = (id: string, title: string, type: string, url: string, uri: string) => {
+      const middleSlot = order[2];
+      const openSlots = order.filter((value) => 
+          Object.keys(positions[value]).length === 0
+      );
+      if (allIds.includes(id)) {
+          setError('This track/artist is already added!');
+      } else if (!openSlots[0]) {
+          setError('You have reached your max number of tracks/artists!');
+      } else {
+          let insertSlot = openSlots[0];
+          if (openSlots.includes(middleSlot)) {
+              insertSlot = middleSlot;
+          }
+          setPositions(Object.fromEntries(
+              Object.entries(positions).map(([key, value]) => 
+                  key === insertSlot ? [key, { url: url, seedId: id, type: type, title: title, uri: uri }] : [key, value]
+              )
+          ));
+          setAllIds([...allIds, id]);
+      }
+  };
 
-    const handleSideBarClick = (index: number) => {
-        console.log(index, playlistIndex, 'add index');
-        setPlaylistIndex(index);
-        setSelected('Playlists');
-        scrollToPlaylist(String(index));
-    }
+  // Shows playlist items when clicked, also scrolling to that display
+  const handleSideBarClick = (index: number) => {
+      setPlaylistIndex(index);
+      setSelected('Playlists');
+      scrollToPlaylist(String(index));
+  };
 
-    const handlePlaylistFetch = async (update?: string, index?: number) => {
-        try {
-            if ((playlistIndex !== null && !Object.keys(playlistDisplay).includes(String(playlistIndex))) || update) {
-                const {data} = await axios.get(`https://api.spotify.com/v1/playlists/${playlistIndex !== null && !update ? playlists[playlistIndex].id: update}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    },
-                    params: {
-                        limit: 60,                        
-                    }
-                })
-                if (update) {
-                    setPlaylistDisplay(Object.fromEntries(
-                        Object.entries(playlistDisplay).map(([key, value]) =>
-                            key === String(index) ? [key, data.tracks.items] : [key, value]
-                        )
-                    ));
+  // Fetching the actual playlist items from the specified playlist
+  const handlePlaylistFetch = async (update?: string, index?: number) => {
+      try {
+          // Will only execute if a playlist has been chosen and it hasn't been fetched yet, or it is a playlist that must be updated
+          if ((playlistIndex !== null && !Object.keys(playlistDisplay).includes(String(playlistIndex))) || update) {
+              const { data } = await axios.get(`https://api.spotify.com/v1/playlists/${playlistIndex !== null && !update ? playlists[playlistIndex].id : update}`, {
+                  headers: {
+                      Authorization: `Bearer ${token}`
+                  },
+                  params: {
+                      limit: 60,                        
+                  }
+              });
+              if (update) {
+                  setPlaylistDisplay(Object.fromEntries(
+                      Object.entries(playlistDisplay).map(([key, value]) =>
+                          key === String(index) ? [key, data.tracks.items] : [key, value]
+                      )
+                  ));
+                  setDisplayOrder([...displayOrder]);
+              } else if (playlistIndex !== null) {
+                  setPlaylistDisplay((prevPlaylistDisplay) => ({
+                      [playlistIndex]: data.tracks.items,
+                      ...prevPlaylistDisplay,
+                  }));
+                  setDisplayOrder([playlistIndex, ...displayOrder]);
+              }
+          }
+          if (!update) {
+              scrollToPlaylist(String(playlistIndex));
+          }
+      } catch (error) {
+          console.log(error);
+      }
+  };
 
-                    setDisplayOrder([...displayOrder]);
-                } else if (playlistIndex !== null) {
-                    setPlaylistDisplay((prevPlaylistDisplay) => ({
-                        [playlistIndex] : data.tracks.items,
-                        ...prevPlaylistDisplay,
-                    }));
-                    setDisplayOrder([playlistIndex, ...displayOrder]);
-                }
-            }
-            if (!update) {
-                scrollToPlaylist(String(playlistIndex));
-            }
-        } catch(error) {
-            console.log(error);
-        }
-    }
-
-    const scrollToPlaylist = (index: string) => {
-        document.querySelector(`#playlistDisplay${index}`)
+  // Scrolls to playlist display on click if not already showing
+  const scrollToPlaylist = (index: string) => {
+      document.querySelector(`#playlistDisplay${index}`)
           ?.scrollIntoView({ block: "center", behavior: "smooth" });
-    }
-    useEffect(() => {
-        if (sidebar === "logout") {
-            setToken('');
-            window.localStorage.removeItem('token');
-        }
-        if (sidebar !== "playlist" && playlistIndex) {
-            setPlaylistIndex(null);
-        }
-        if (sidebar === "home") {
-            setSelected('All');
-        }
-    }, [sidebar])
+  };
 
-    useEffect(() => {
-        if (sidebar === "playlist" && playlistIndex !== null) {
-            handlePlaylistFetch();
-        }
-    }, [playlistIndex])
+  useEffect(() => {
+      // Wipes local access token sending user to login
+      if (sidebar === "logout") {
+          setToken('');
+          window.localStorage.removeItem('token');
+      }
+      // Takes user out of quick playlist add mode
+      if (sidebar !== "playlist" && playlistIndex) {
+          setPlaylistIndex(null);
+      }
+      // Takes user to Home
+      if (sidebar === "home") {
+          setSelected('All');
+      }
+  }, [sidebar]);
 
-    if (!token) {
-        return (
-            <Login/>
-        )
-    }
+  useEffect(() => {
+      // Fetching playlist items to display upon choosing a playlist 
+      if (sidebar === "playlist" && playlistIndex !== null) {
+          handlePlaylistFetch();
+      }
+  }, [playlistIndex]);
+
+  // Sends user to login page if token is not valid
+  if (!token) {
+      return (
+          <Login/>
+      );
+  }
+
     return (
         <div className="Body-main Flex">
             <SideBar sidebar={sidebar} setSidebar={setSidebar} username={personal.username} playlist={playlists} handleSideBarClick={handleSideBarClick} handleSendPlaylist={handleSendPlaylist}/>
@@ -304,7 +317,7 @@ const HomePage: React.FC = () => {
                         {success}
                         <button className="ml-3 dismissButton" onClick={() => setSuccess('')}>X</button>
                     </div>}
-                <Playlists name={name} playlistDivRef={playlistDivRef} playlists={playlists} personal={personal} handleSendPlaylist={handleSendPlaylist}/>
+                <Playlists name={name} playlistDivRef={playlistDivRef} playlists={playlists} personal={personal.id} handleSendPlaylist={handleSendPlaylist}/>
                 <Recommendation token={token} order={order} setOrder={setOrder} allIds={allIds} positions={positions} setPositions={setPositions} setAllIds={setAllIds} recommended={recommended} setRecommended={setRecommended} setSelected={setSelected} mute={mute} setMute={setMute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd} playlist={playlistIndex ? playlists[playlistIndex].name : ''}/>
                 
                 <div id="scroll-main">
@@ -332,6 +345,7 @@ const HomePage: React.FC = () => {
             </div>
         </div>
     );
-};
+};      
 
 export default HomePage;
+  

@@ -43,7 +43,6 @@ const SideBar: React.FC<SideBarComponents> = ({sidebar, setSidebar, username, pl
                             </h4>
                         </button>
                 </div>
-                {/* <div className="sidebar-div"  onClick={() => setSidebar('logout')}> */}
                 <div className="sidebar-div"  onClick={() => setSidebar('logout')}>
                     <img className="sidebar-img" src={Logout} alt=''/>
                         <button className='sidebar-button' style={{color: sidebar === 'logout' ? 'white': undefined}}>
@@ -56,7 +55,7 @@ const SideBar: React.FC<SideBarComponents> = ({sidebar, setSidebar, username, pl
                 <div id="playlist-holder">
                     {playlist.map((value, index) => {
                         return(
-                            <Tooltip key={index} title={`Quick Add to this ${value.name}`}>
+                            <Tooltip role='tooltip' key={index} title={`Quick Add to this ${value.name}`}>
                                 <div className='sidebar-playlist-div' onDrop={(e) => handleDrop(e, value.id, index)} onDragOver={handleDragOver}>
                                     <button className='sidebar-button' onClick={() => {setSidebar('playlist'); handleSideBarClick(index); setFocus(index);}} style={{color: focus === index && sidebar === "playlist" ? 'white': undefined}}>
                                         <p className='sidebar-playlists'>{value.name.length > 22 ? value.name.slice(0, 22) + '...' : value.name}</p>

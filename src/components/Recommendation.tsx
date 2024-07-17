@@ -22,7 +22,6 @@ interface RecommendationProps {
     handleAdd: (id: string, title: string, type: string, url: string, uri: string) => void;
     playlist: string
 }
-
 const Recommendation: React.FC<RecommendationProps> = ({
     token,
     order,
