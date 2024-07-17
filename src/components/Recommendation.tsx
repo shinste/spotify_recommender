@@ -55,7 +55,7 @@ const Recommendation: React.FC<RecommendationProps> = ({
                 params: {
                     seed_tracks: seedSongs.join(','),
                     seed_artists: seedArtists.join(','),
-                    limit: 20
+                    limit: 20 
                 }
             });
             setRecommended(data.tracks);
@@ -143,7 +143,7 @@ const Recommendation: React.FC<RecommendationProps> = ({
                     }
                     {order.map((position, index) => {
                         return (
-                            <div onMouseEnter={() => handleHover(index, false)} onMouseLeave={() => handleHover(index, true)} className={'display' + String(index) + " Vertical-center Hover-div"} onDrop={(e) => handleDrop(e, position)} onDragOver={handleDragOver}>
+                            <div key={index} onMouseEnter={() => handleHover(index, false)} onMouseLeave={() => handleHover(index, true)} className={'display' + String(index) + " Vertical-center Hover-div"} onDrop={(e) => handleDrop(e, position)} onDragOver={handleDragOver}>
                                 <img id={position} className='Recommend-img' src={Object.keys(positions[position]).length > 0 ? positions[position].url : undefined} alt="" />
                                 {allIds.length === 0 && index === 2 &&
                                     <div>

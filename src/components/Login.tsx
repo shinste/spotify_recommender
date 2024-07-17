@@ -6,7 +6,7 @@ const Login = () => {
     const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
     const TYPE = "token";
     return (
-        <body id="Login-body">
+        <div id="Login-body">
             <div style={{paddingTop: '140px'}} className="Flex">
                 <div id="Title-div">
                     <h3 id="Login-title">Spotify Song Recommender</h3>
@@ -39,7 +39,7 @@ const Login = () => {
 
                 </div>
             
-        </body>
+        </div>
     );
 };
 

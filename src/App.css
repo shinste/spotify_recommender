@@ -342,6 +342,7 @@ h1 {
 .Playlist-content {
   font-weight: bold;
   display: flex;
+  overflow-x: hidden;
 }
 
 .Playlist-name {

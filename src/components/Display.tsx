@@ -161,7 +161,7 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                         }
 
                         return (
-                            <div className="Display-div">
+                            <div key={index} className="Display-div">
                                 {item.type === "track" ?
                                     <div 
                                         style={{position: 'relative', height: '70%'}}
