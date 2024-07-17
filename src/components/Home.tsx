@@ -47,7 +47,6 @@ const Home: React.FC = () => {
             }
             window.localStorage.setItem("token", token)
         }
-        token = window.localStorage.getItem("token");
         if (token) {
             setToken(token);
             spotifyAPI('me/top/tracks', {limit: 20}, setTopSongs, token);
@@ -267,7 +266,6 @@ const Home: React.FC = () => {
     useEffect(() => {
         if (sidebar === "logout") {
             setToken('');
-            window.localStorage.removeItem('token');
         }
         if (sidebar !== "playlist" && playlistIndex) {
             setPlaylistIndex(null);
