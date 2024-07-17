@@ -1,9 +1,9 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import Home from '../../src/components/Home.tsx';
+import HomePage from '../../src/pages/HomePage.tsx'
 describe('Home', () => {
     it("Should render the login page if token is not found", () => {
-        render(<Home />)
+        render(<HomePage />)
         expect(screen.queryByText(/approve/i)).toBeInTheDocument();
     });
 
