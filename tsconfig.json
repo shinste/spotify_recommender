@@ -8,6 +8,7 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
+    "types": ["vitest/globals"],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,

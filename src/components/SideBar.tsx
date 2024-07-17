@@ -43,6 +43,7 @@ const SideBar: React.FC<SideBarComponents> = ({sidebar, setSidebar, username, pl
                             </h4>
                         </button>
                 </div>
+                {/* <div className="sidebar-div"  onClick={() => setSidebar('logout')}> */}
                 <div className="sidebar-div"  onClick={() => setSidebar('logout')}>
                     <img className="sidebar-img" src={Logout} alt=''/>
                         <button className='sidebar-button' style={{color: sidebar === 'logout' ? 'white': undefined}}>
