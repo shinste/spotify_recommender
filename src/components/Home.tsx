@@ -139,7 +139,6 @@ const Home: React.FC = () => {
                     } else {
                         setSuccess(`Successfully added ${name} to ${playlistName}`);
                     }
-                    
                 }
             } else {
                 const {data} = await axios.get(`https://api.spotify.com/v1/${query}`, {
@@ -171,6 +170,10 @@ const Home: React.FC = () => {
             }
         } catch(error) {
             console.log(error);
+            if (String(error).includes('401')) {
+                window.localStorage.removeItem('token');
+                setToken('');
+            }
         }
     }
 
@@ -293,7 +296,7 @@ const Home: React.FC = () => {
             <SideBar sidebar={sidebar} setSidebar={setSidebar} username={personal.username} playlist={playlists} handleSideBarClick={handleSideBarClick} handleSendPlaylist={handleSendPlaylist}/>
             <div id="Not-sidebar">
                 {error && 
-                    <div id="dismiss-alert" className="bg-red-50 border border-red-200 text-sm text-black-800 rounded-lg p-4 dark:bg-red-800/50 dark:border-red-900" role="alert" >
+                    <div id="dismiss-alert" className="bg-red-50 border border-red-200 text-sm rounded-lg p-4 dark:bg-red-800/50 dark:border-red-900" role="alert" >
                         {error}
                     <button className="ml-3 dismissButton" onClick={() => setError('')}>X</button>
                 </div>}
@@ -306,7 +309,7 @@ const Home: React.FC = () => {
                 <Recommendation token={token} order={order} setOrder={setOrder} allIds={allIds} positions={positions} setPositions={setPositions} setAllIds={setAllIds} recommended={recommended} setRecommended={setRecommended} setSelected={setSelected} mute={mute} setMute={setMute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd} playlist={playlistIndex ? playlists[playlistIndex].name : ''}/>
                 
                 <div id="scroll-main">
-                    {sidebar !== 'search' && <Select setSelected={setSelected} selected={selected} setSidebar={setSidebar}/>}
+                    {sidebar !== 'search' && <Select setSelected={setSelected} selected={selected}/>}
                     {sidebar === 'search' && 
                         <Search spotifyAPI={spotifyAPI} setSearchSongs={setSearchSongs} setSearchArtists={setSearchArtists} searchCategory={searchCategory} setSearchCategory={setSearchCategory}/>         
                     }

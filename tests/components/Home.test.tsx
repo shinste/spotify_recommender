@@ -5,5 +5,7 @@ describe('Home', () => {
     it("Should render the login page if token is not found", () => {
         render(<Home />)
         expect(screen.queryByText(/approve/i)).toBeInTheDocument();
-    })
+    });
+
+    it("")
 })
