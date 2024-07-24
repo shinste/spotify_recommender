@@ -24,6 +24,12 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
     const divRefs = useRef<(HTMLDivElement | null)[]>([]);
     const [errors, setError] = useState<string[]>([]);
     const [previews, setPreviews] = useState<string[]>([]);
+    const refState = useRef(mute);
+    const _setRefState = (data: boolean) => {
+        refState.current = data;
+        setMute(data);
+    }
+
     function scrollContent(direction: string) {
         const container = document.querySelector('#' + reference);
         if (container) {
@@ -41,6 +47,7 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
             }
         }   
     }
+
     const handlePreview = useCallback((url: string, divHover: HTMLElement | null) => {
         const audioPlayer = document.getElementById(url) as HTMLAudioElement;
         let hoverTimer: NodeJS.Timeout | null = null;
@@ -48,45 +55,40 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
             setError([...errors, url]);
         } else if (!previews.includes(url)) {
             setPreviews([...previews, url])
-            divHover?.addEventListener('mouseenter', () => {
-            hoverTimer = setTimeout(() => {
-                if (audioPlayer !== currentAudio) {
-                    currentAudio?.pause();
-                }
-                if (!mute) {
-                    audioPlayer.volume = .05;
-                } else {
-                    audioPlayer.volume = 0;
-                }
-                setCurrentAudio(audioPlayer);
-                var isPlaying = audioPlayer.currentTime > 0 && !audioPlayer.paused && !audioPlayer.ended && audioPlayer.readyState > audioPlayer.HAVE_CURRENT_DATA;
-                if (!isPlaying) {
-                    const playing = audioPlayer.play();
-                    if (playing !== undefined) {
-                        playing.then(_ => {
-                        })
-                        .catch(error => {
-                            setError([...errors, error])
-                            console.log(error);
-                        });
-                }
-               
-                }
-               
-            }, 1000);
-            });
-        }
-       
-        if (!previews.includes(url)) {
-            divHover?.addEventListener('mouseleave', () => {
+            const handleMouseEnter = () => {
+                hoverTimer = setTimeout(() => {
+                    if (audioPlayer !== currentAudio) {
+                        currentAudio?.pause();
+                    }
+                    audioPlayer.volume = refState.current ? 0 : 0.05;
+                    setCurrentAudio(audioPlayer);
+                    if (audioPlayer.currentTime === 0 || audioPlayer.paused) {
+                        const playing = audioPlayer.play();
+                        if (playing !== undefined) {
+                            playing.catch(error => {
+                                setError([...errors, error]);
+                                console.log(error);
+                            });
+                        }
+                    }
+                }, 1000);
+            };
+        
+            const handleMouseLeave = () => {
                 if (hoverTimer) {
                     clearTimeout(hoverTimer);
                     hoverTimer = null;
                 }
-                if (audioPlayer) {
-                    audioPlayer.pause();
-                }
-            });
+                audioPlayer.pause();
+            };
+
+            divHover?.addEventListener('mouseenter', handleMouseEnter);
+            divHover?.addEventListener('mouseleave', handleMouseLeave);
+
+            return () => {
+                divHover?.removeEventListener('mouseenter', handleMouseEnter);
+                divHover?.removeEventListener('mouseleave', handleMouseLeave);
+            };
         }
     }, [errors, currentAudio, mute]);
 
@@ -182,7 +184,7 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                                                 </button>
                                             </Tooltip>
                                             <Tooltip title="Toggle Preview">
-                                                <button id={'Volume-' + title + String(index)} hidden onClick={() => setMute(!mute)} className='Volume-button'>
+                                                <button id={'Volume-' + title + String(index)} hidden onClick={() => _setRefState(!mute)} className='Volume-button'>
                                                     <img id="volume-button" src={mute ? Mute : Audio} alt=""/>
                                                 </button>
                                             </Tooltip>
