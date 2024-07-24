@@ -171,7 +171,7 @@ const Display: React.FC<DisplayProps> = ({ showcase, title, reference, setMute, 
                                         onMouseEnter={() => {handlePreview(item.preview_url, divRefs.current[index]!); handleHover(title + String(index), false);}}
                                         onMouseLeave={() => {handleHover(title + String(index), true);}}
                                     >
-                                        <img src={item.album.images[0].url} className="Display-img" alt=""/>
+                                        <img src={item.album.images[0].url} className="Display-img" loading="lazy" alt=""/>
                                         <div id={"Hover-" + title + String(index)} className="Button-hover">
                                             <Tooltip title="Add to Selection">
                                                 <button id={'Add-' + title + String(index)} hidden className="hs-tooltip-toggle tool-button" onClick={() => memoizedHandleAdd(item.id, item.name, item.type, item.album.images[0].url, item.uri)}>
