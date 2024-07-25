@@ -443,7 +443,7 @@ h1 {
 
 #Login-label{
   text-align: left;
-  color: gray;
+  color: black;
   margin-top: 10px;
 }
 
@@ -587,6 +587,19 @@ h1 {
   color: inherit;
   text-decoration: none;
   cursor: pointer;
+}
+
+.recommend-button{
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: #d6b7b7;
+}
+
+.recommend-button:hover{
+  color: #a3a2a2;
 }
 
 .sidebar-button:hover{

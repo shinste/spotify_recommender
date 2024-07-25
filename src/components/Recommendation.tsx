@@ -171,11 +171,11 @@ const Recommendation: React.FC<RecommendationProps> = ({
                 <div className='horizontal-center' style={{marginTop: '60px'}}>
                     {recommended.length > 0 && 
                     <div>
-                        <button className="sidebar-button" onClick={() => {
+                        <button className="recommend-button" onClick={() => {
                             setAllIds([]);
                             setPositions({ "imageDrop1": {}, "imageDrop2": {}, "imageDrop3": {}, "imageDrop4": {}, "imageDrop5": {} });
                         }}><h4 className='no-margin'>Clear Seed Songs/Artists</h4></button>
-                        <button className="sidebar-button" onClick={() => setRecommended([])}><h4 className='no-margin'>Clear Recommendations</h4></button>
+                        <button className="recommend-button" onClick={() => setRecommended([])}><h4 className='no-margin'>Clear Recommendations</h4></button>
                     </div>}
                     {recommended.length === 0 &&
                         <button onClick={recommend} className="py-3 px-4 gap-x-2 mb-5 mt-5 text-sm font-semibold rounded-lg border border-transparent bg-purple-600 text-white hover:bg-purple-700">
