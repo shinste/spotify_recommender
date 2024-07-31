@@ -32,6 +32,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -56,7 +57,7 @@
   box-sizing: border-box;
 }
 
-#Not-sidebar{
+#Not-sidebar {
   width: 100%;
   overflow-y: auto;
   overflow-x: hidden;
@@ -67,18 +68,19 @@ h1 {
   font-size: 80px;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
 }
 
-#scroll-main{
+#scroll-main {
   height: 500px;
   padding-right: 150px;
   margin-left: 5%;
 }
-npm 
-.Most-played {
+
+npm .Most-played {
   text-align: left;
   display: flex;
   flex-direction: column;
@@ -194,7 +196,7 @@ h1 {
   height: 100px;
   width: 100px;
   border: white solid;
-  margin-right: -25px; 
+  margin-right: -25px;
   position: absolute;
   transition: all 10s;
 
@@ -205,7 +207,7 @@ h1 {
   height: 120px;
   width: 120px;
   border: white solid;
-  margin-right: -20px; 
+  margin-right: -20px;
   z-index: 1;
   position: absolute;
   transition: all 10s ease;
@@ -244,7 +246,7 @@ h1 {
   transition: all 10s linear;
 }
 
-.Hover-div{
+.Hover-div {
   position: relative;
 }
 
@@ -273,7 +275,7 @@ h1 {
   border-radius: 12px;
 }
 
-.tool-button{
+.tool-button {
   margin-right: 15px;
   background-color: gray;
   border-radius: 12px;
@@ -293,6 +295,10 @@ h1 {
   right: 30%;
   top: 50%;
   z-index: 3;
+  border-radius: 12px;
+  height: 50px;
+  transform: translate(10%, -50%);
+  background-color: #876eda;
 }
 
 #Left-button {
@@ -300,19 +306,24 @@ h1 {
   left: 30%;
   top: 50%;
   z-index: 3;
+  border-radius: 12px;
+  height: 50px;
+  transform: translate(-20%, -50%);
+  background-color: #876eda;
 }
 
-.Volume-button{
+.Volume-button {
   /* margin-top: 20px; */
   width: 30px;
   background-color: grey;
   border-radius: 12px;
   margin-top: auto;
-  margin-bottom: auto;  
+  margin-bottom: auto;
 }
 
 .pressed {
-  background-color: #afb1b3; /* Pressed background color */
+  background-color: #afb1b3;
+  /* Pressed background color */
   box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.2);
   transform: translateY(1px);
 }
@@ -355,6 +366,7 @@ h1 {
   width: 100%;
   border: none;
 }
+
 .Playlist-button:hover {
   background-color: rgb(122, 122, 122);
 }
@@ -406,19 +418,18 @@ h1 {
 #Recommendation-div {
   width: 85vw;
   height: auto;
-  /* background-color: #D9D9D9; */
   background-image: linear-gradient(#5627EF, black);
   margin-bottom: 10px;
   padding: 3px;
-  /* border-radius: 12px; */
 }
 
-.Recommend-img{
+.Recommend-img {
   width: 100%;
   height: 100%;
 }
 
-.Recommend-img:not([src]), .Recommend-img[src=""] {
+.Recommend-img:not([src]),
+.Recommend-img[src=""] {
   display: none;
 }
 
@@ -431,7 +442,7 @@ h1 {
   overflow: hidden
 }
 
-#Login-title{
+#Login-title {
   margin-top: 0px;
   font-size: 50px;
   color: whitesmoke;
@@ -441,18 +452,18 @@ h1 {
   margin-left: 0;
 }
 
-#Login-label{
+#Login-label {
   text-align: left;
   color: black;
   margin-top: 10px;
 }
 
-#Title-div{
+#Title-div {
   margin-left: 120px;
   margin-bottom: 100px;
 }
 
-#Description-div{
+#Description-div {
   width: 300px;
   height: 100px;
   border-radius: 12px;
@@ -461,13 +472,13 @@ h1 {
   margin: auto;
 }
 
-#Description{
+#Description {
   width: 100%;
   color: white;
   font-size: 20px;
 }
 
-#Disclaimer{
+#Disclaimer {
   background-color: #2A2A2A;
   width: 600px;
   height: fit-content;
@@ -477,10 +488,10 @@ h1 {
   color: white;
   margin-top: -900px;
   font-size: 20px;
-  
+
 }
 
-#Sign-in{
+#Sign-in {
   height: 90px;
   width: 100%;
   background-color: #1ED760;
@@ -490,19 +501,19 @@ h1 {
   border-radius: 12px;
 }
 
-#Sign-in:hover{
+#Sign-in:hover {
   background-color: #219c4c;
 }
 
-#Sign-in:active{
+#Sign-in:active {
   background-color: #1a783b;
 }
 
-.No-hover{
+.No-hover {
   pointer-events: none;
 }
 
-#Gif-holder{
+#Gif-holder {
   background-color: #2A2A2A;
   margin: 0;
   height: 100vh;
@@ -515,12 +526,12 @@ h1 {
   /* position: absolute; */
 }
 
-.ex-slider{
+.ex-slider {
   display: flex;
-  height: 100px;  
+  height: 100px;
 }
 
-.ex-item{
+.ex-item {
   padding: 5px;
   border: 1px black solid;
   transition: transform 300ms ease 100ms;
@@ -530,11 +541,11 @@ h1 {
   transform: translateX(-10%);
 }
 
-.Display-div:hover ~ .Display-div {
+.Display-div:hover~.Display-div {
   transform: translateX(10%);
 }
 
-#side-bar{
+#side-bar {
   width: 15vw;
   height: 100%;
   background-color: black;
@@ -548,37 +559,37 @@ h1 {
   color: #838383;
 }
 
-.side-bar-p{
+.side-bar-p {
   font-weight: bold;
   text-align: left;
 }
 
-.sidebar-img{
+.sidebar-img {
   height: 30px;
   width: 30px;
   margin-right: 15px;
 }
 
-.sidebar-div{
+.sidebar-div {
   display: flex;
   justify-content: left;
   margin-bottom: 20px;
   width: 80px;
 }
 
-.sidebar-button-p{
+.sidebar-button-p {
   margin-top: auto;
   margin-bottom: auto;
   margin-left: 15px;
 }
 
-#side-bar-margins{
+#side-bar-margins {
   margin-top: 30px;
   position: fixed;
   width: 13vw;
 }
 
-.sidebar-button{
+.sidebar-button {
   background: none;
   border: none;
   padding: 0;
@@ -589,7 +600,7 @@ h1 {
   cursor: pointer;
 }
 
-.recommend-button{
+.recommend-button {
   background: none;
   border: none;
   padding: 0;
@@ -598,49 +609,49 @@ h1 {
   color: #d6b7b7;
 }
 
-.recommend-button:hover{
+.recommend-button:hover {
   color: #a3a2a2;
 }
 
-.sidebar-button:hover{
+.sidebar-button:hover {
   color: #a3a2a2;
 }
 
-#divider{
+#divider {
   color: #838383;
   border: #838383 1px solid;
   width: 100%;
 }
 
-.sidebar-playlists{
+.sidebar-playlists {
   margin-bottom: 15px;
   margin-top: 0;
 }
 
-.sidebar-playlist-div{
+.sidebar-playlist-div {
   text-align: left;
   overflow-y: auto;
   overflow-x: hidden;
 }
 
-.horizontal-center{
+.horizontal-center {
   margin-left: auto;
   margin-right: auto;
 }
 
-#title-margins{
+#title-margins {
   margin-top: 5px;
   margin-bottom: 10px;
 }
 
-.no-margin{
+.no-margin {
   margin-top: 0px;
   margin-bottom: 0px;
   margin-left: 30px;
   margin-right: 30px;
 }
 
-#playlist-holder{
+#playlist-holder {
   height: 80%;
   overflow-y: auto;
 }
@@ -649,19 +660,19 @@ h1 {
   display: none;
 }
 
-#link-spotify{
+#link-spotify {
   font-weight: bold;
   font-size: 20px;
 }
 
-#important{
+#important {
   color: red;
   margin-top: -100px;
   font-weight: bold;
   font-size: 13px;
 }
 
-.no-data{
+.no-data {
   font-size: 20px;
   color: whitesmoke;
   text-align: center;
@@ -674,4 +685,3 @@ h1 {
 #scroll::-webkit-scrollbar {
   display: none;
 }
-

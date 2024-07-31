@@ -1,8 +1,9 @@
-import axios from 'axios';
 import Display from "./Display";
 import Playlist from '../icons/playlist.png';
 import Remove from '../icons/remove.png';
-import { useState } from 'react';
+import useRecommend from '../hooks/useRecommend';
+import useDisplayInteractions from '../hooks/useDisplayInteractions';
+import * as CONSTANTS from '../constants/homeConstants'
 
 interface RecommendationProps {
     order: string[];
@@ -12,125 +13,24 @@ interface RecommendationProps {
     positions: { [key: string]: { [key: string]: string } };
     setPositions: React.Dispatch<React.SetStateAction<{ [key: string]: { [key: string]: string } }>>;
     setAllIds: React.Dispatch<React.SetStateAction<string[]>>;
-    recommended: any[];
-    setRecommended: React.Dispatch<React.SetStateAction<any[]>>;
     setSelected: React.Dispatch<React.SetStateAction<string>>;
     mute: boolean;
     setMute: React.Dispatch<React.SetStateAction<boolean>>;
     handleButtonClick: (uri: string, e: React.MouseEvent<HTMLButtonElement, MouseEvent>, name: string) => void;
-    handleDrag: (e: React.DragEvent, id: string, title: string, type: string, image: string, uri: string) => void;
     handleAdd: (id: string, title: string, type: string, url: string, uri: string) => void;
     playlist: string
+    setAuthToken: React.Dispatch<React.SetStateAction<string | null | undefined>>
+    authToken: string;
 }
-const Recommendation: React.FC<RecommendationProps> = ({
-    token,
-    order,
-    setOrder,
-    allIds,
-    positions,
-    setPositions,
-    setAllIds,
-    recommended,
-    setRecommended,
-    setSelected,
-    mute,
-    setMute,
-    handleButtonClick,
-    handleDrag,
-    handleAdd,
-    playlist
-}) => {
-    const recommend = async () => {
-        const seedSongs = Object.entries(positions).map(([key, value]) =>
-            value.type === "track" && value.seedId).filter(Boolean);
+const Recommendation: React.FC<RecommendationProps> = ({ token, order, setOrder, allIds, positions, setPositions, setAllIds, setSelected,
+    mute, setMute, handleButtonClick, handleAdd, playlist, setAuthToken, authToken }) => {
 
-        const seedArtists = Object.entries(positions).map(([key, value]) =>
-            value.type === "artist" && value.seedId).filter(Boolean);
-        try {
-            const { data } = await axios.get('https://api.spotify.com/v1/recommendations', {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-                params: {
-                    seed_tracks: seedSongs.join(','),
-                    seed_artists: seedArtists.join(','),
-                    limit: 20 
-                }
-            });
-            setRecommended(data.tracks);
-            setSelected('All');
-        } catch (error) {
-            console.log(error);
-        }
-    };
+    // Recommendation data and function
+    const { recommended, recommend, setRecommended } = useRecommend(authToken, setAuthToken, positions, setSelected);
 
-    const handleDrop = (e: React.DragEvent, spot: string) => {
-        const seedTitle = e.dataTransfer.getData('title') as string;
-        const seedId = e.dataTransfer.getData('id') as string;
-        const imageUrl = e.dataTransfer.getData('image') as string;
-        const type = e.dataTransfer.getData('type') as string;
-        const imageSpot = document.getElementById(spot) as HTMLImageElement;
-        let newPositions = { ...positions };
-        let newIds = [...allIds];
-        if (!allIds.includes(seedId)) {
-            if (imageSpot) {
-                if (Object.keys(positions[spot]).length > 0) {
-                    newIds = allIds.filter((value) => value !== positions[spot].url);
-                    newPositions = Object.fromEntries(
-                        Object.entries(positions).map(([key, value]) =>
-                            key === spot ? [key, []] : [key, value]
-                        )
-                    );
-                }
-                setPositions(Object.fromEntries(
-                    Object.entries(newPositions).map(([key, value]) =>
-                        key === spot ? [key, { url: imageUrl, seedId: seedId, type: type, title: seedTitle }] : [key, value]
-                    )
-                ));
-            }
-            setAllIds([...newIds, seedId]);
-        }
-    }
+    // All the display interactions that have to do with this components
+    const { handleLeft, handleRight, handleHover, handleRemove, handleDrop, handleDragOver } = useDisplayInteractions(positions, allIds, setAllIds, setPositions, order, setOrder)
 
-    const handleDragOver = (e: React.DragEvent) => {
-        e.preventDefault();
-    }
-
-    const handleRemove = (position: string) => {
-        setPositions(Object.fromEntries(
-            Object.entries(positions).map(([key, value]) =>
-                key === position ? [key, {}] : [key, value]
-            )
-        ));
-        setAllIds(allIds.filter((value) => value !== positions[position].seedId));
-    }
-
-    const handleHover = (index: number, status: boolean) => {
-        const addRemoveButton = document.getElementById('Remove-Add-' + String(index));
-        const playlistButton = document.getElementById('Playlist-' + String(index));
-        if (addRemoveButton && playlistButton) {
-            addRemoveButton.hidden = status;
-            playlistButton.hidden = status;
-        }
-    }
-
-    const handleLeft = () => {
-        setOrder((prevOrder) => {
-            const newPositions = [...prevOrder];
-            const first = newPositions.pop();
-            newPositions.unshift(String(first));
-            return newPositions;
-        });
-    }
-
-    const handleRight = () => {
-        setOrder((prevOrder) => {
-            const newPositions = [...prevOrder];
-            const first = newPositions.shift();
-            newPositions.push(String(first));
-            return newPositions;
-        });
-    }
 
     return (
         <div id='Recommendation-div' className='horizontal-center'>
@@ -151,16 +51,16 @@ const Recommendation: React.FC<RecommendationProps> = ({
                                 }
                                 {Object.keys(positions[position]).length > 0 && index === 2 &&
                                     <div className="Button-hover">
-                                        <button id={'Remove-Add-' + String(index)} hidden style={{backgroundColor: 'grey', borderRadius: '12px'}} onClick={() => handleRemove(position)}>
+                                        <button id={'Remove-Add-' + String(index)} hidden style={{ backgroundColor: 'grey', borderRadius: '12px' }} onClick={() => handleRemove(position)}>
                                             <img src={Remove} className='Hover-button' alt="" />
                                         </button>
-                                        <button id={'Playlist-' + String(index)} className="hs-dropdown-toggle" hidden style={{backgroundColor: 'grey', borderRadius: '12px'}} onClick={(e) => handleButtonClick(positions[position].uri,e,positions[position].title)}>
+                                        <button id={'Playlist-' + String(index)} className="hs-dropdown-toggle" hidden style={{ backgroundColor: 'grey', borderRadius: '12px' }} onClick={(e) => handleButtonClick(positions[position].uri, e, positions[position].title)}>
                                             <img src={Playlist} className='Hover-button' alt="" />
                                         </button>
                                     </div>
-                                    
+
                                 }
-                                <p style={{ color: 'whitesmoke', margin: 0}}>{positions[position].title}</p>
+                                <p style={{ color: 'whitesmoke', margin: 0 }}>{positions[position].title}</p>
                             </div>
                         );
                     })}
@@ -168,25 +68,25 @@ const Recommendation: React.FC<RecommendationProps> = ({
                         <button id="Right-button" onClick={handleRight}>&gt;</button>
                     }
                 </div>
-                <div className='horizontal-center' style={{marginTop: '60px'}}>
-                    {recommended.length > 0 && 
-                    <div>
-                        <button className="recommend-button" onClick={() => {
-                            setAllIds([]);
-                            setPositions({ "imageDrop1": {}, "imageDrop2": {}, "imageDrop3": {}, "imageDrop4": {}, "imageDrop5": {} });
-                        }}><h4 className='no-margin'>Clear Seed Songs/Artists</h4></button>
-                        <button className="recommend-button" onClick={() => setRecommended([])}><h4 className='no-margin'>Clear Recommendations</h4></button>
-                    </div>}
+                <div className='horizontal-center' style={{ marginTop: '60px' }}>
+                    {recommended.length > 0 &&
+                        <div>
+                            <button className="recommend-button" onClick={() => {
+                                setAllIds([]);
+                                setPositions({ "imageDrop1": {}, "imageDrop2": {}, "imageDrop3": {}, "imageDrop4": {}, "imageDrop5": {} });
+                            }}><h4 className='no-margin'>Clear Seed Songs/Artists</h4></button>
+                            <button className="recommend-button" onClick={() => setRecommended([])}><h4 className='no-margin'>Clear Recommendations</h4></button>
+                        </div>}
                     {recommended.length === 0 &&
                         <button onClick={recommend} className="py-3 px-4 gap-x-2 mb-5 mt-5 text-sm font-semibold rounded-lg border border-transparent bg-purple-600 text-white hover:bg-purple-700">
                             Create Recommendation
                         </button>
                     }
                     <div className='horizontal-center' style={{ width: '73vw' }}>
-                        {recommended.length > 0 && <Display showcase={recommended} title={'Recommended Songs'} reference={'recommended'} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleDrag={handleDrag} handleAdd={handleAdd} playlist={playlist}/>}
+                        {recommended.length > 0 && <Display authToken={token} query={''} params={{}} showcase={recommended} title={CONSTANTS.TITLE_RECOMMEND} reference={CONSTANTS.REFERENCE_RECOMMEND} setMute={setMute} mute={mute} handleButtonClick={handleButtonClick} handleAdd={handleAdd} playlist={playlist} setAuthToken={setAuthToken} />}
                     </div>
                     {recommended.length > 0 &&
-                        <button onClick={() => {setRecommended([]); recommend()}} className="py-3 px-4 gap-x-2 mb-5 text-sm font-semibold rounded-lg border border-transparent bg-purple-600 text-white hover:bg-purple-700">
+                        <button onClick={() => { setRecommended([]); recommend() }} className="py-3 px-4 gap-x-2 mb-5 text-sm font-semibold rounded-lg border border-transparent bg-purple-600 text-white hover:bg-purple-700">
                             Generate New Recommendations
                         </button>
                     }
