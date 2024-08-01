@@ -97,7 +97,7 @@ const Home: React.FC<HomeProps> = ({ authToken, setAuthToken }) => {
                         {trackSearchKey && (selected === CONSTANTS.SELECTED_ALL || selected === CONSTANTS.SELECTED_SEARCH) &&
                             <Display authToken={authToken} query={CONSTANTS.QUERY_SEARCH} params={{ q: trackSearchKey, limit: 10, type: CONSTANTS.CATEGORY_TRACK }} title={CONSTANTS.TITLE_SONG_SEARCH} setMute={setMute} mute={mute} reference={CONSTANTS.REFERENCE_SONG_SEARCH} handleButtonClick={handlePlaylistButtonClick} handleAdd={handleAdd} playlist={playlistIndex ? playlists[playlistIndex].name : ''} setAuthToken={setAuthToken} />
                         }
-                        {artistSearchKey && sidebar === "search" &&
+                        {artistSearchKey && sidebar === CONSTANTS.SIDEBAR_SEARCH &&
                             <Display authToken={authToken} query={CONSTANTS.QUERY_SEARCH} params={{ q: artistSearchKey, limit: 10, type: CONSTANTS.CATEGORY_ARTIST }} title={CONSTANTS.TITLE_ARTIST_SEARCH} setMute={setMute} mute={mute} reference={CONSTANTS.REFERENCE_ARTIST_SEARCH} handleButtonClick={handlePlaylistButtonClick} handleAdd={handleAdd} playlist={playlistIndex ? playlists[playlistIndex].name : ''} setAuthToken={setAuthToken} />
                         }
                         {(selected === CONSTANTS.SELECTED_ALL || selected === CONSTANTS.SELECTED_MOST) && (sidebar !== CONSTANTS.SIDEBAR_SEARCH) &&

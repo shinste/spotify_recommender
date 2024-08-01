@@ -22,6 +22,7 @@ interface RecommendationProps {
     setAuthToken: React.Dispatch<React.SetStateAction<string | null | undefined>>
     authToken: string;
 }
+
 const Recommendation: React.FC<RecommendationProps> = ({ token, order, setOrder, allIds, positions, setPositions, setAllIds, setSelected,
     mute, setMute, handleButtonClick, handleAdd, playlist, setAuthToken, authToken }) => {
 

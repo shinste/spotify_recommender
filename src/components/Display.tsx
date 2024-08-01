@@ -1,9 +1,9 @@
 import React, { useRef } from 'react';
+import Tooltip from '@mui/material/Tooltip';
 import Playlist from '../icons/playlist.png'
 import Add from '../icons/add.png'
 import Audio from '../icons/audio.png'
 import Mute from '../icons/mute.png'
-import Tooltip from '@mui/material/Tooltip';
 import useSpotifyAPI from '../hooks/useSpotifyAPI';
 import { handleDrag } from '../functions/handleDrag';
 import useDisplayHover from '../hooks/useDisplayHover';
@@ -39,7 +39,6 @@ const Display: React.FC<DisplayProps> = ({ authToken, query, params, showcase, t
 
     // Spotify API initial data fetch
     const { statusCode, data } = useSpotifyAPI<{ items: any[] }>(authToken, query, params, setAuthToken);
-
     if (showcase) {
         displayData = showcase;
     } else {

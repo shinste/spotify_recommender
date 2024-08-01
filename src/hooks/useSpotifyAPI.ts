@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios from 'axios';
 
 type UseSpotifyAPIResponse<T> = {
   statusCode: number;

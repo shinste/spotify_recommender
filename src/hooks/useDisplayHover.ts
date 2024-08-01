@@ -23,7 +23,7 @@ const useDisplayHover = (reference: string, previews: string[], mute: boolean, r
         }
     }
 
-    // If song hasn't been previewed before, attach event listeners for mouseenter and mouseleave
+    // If song hasn't been previewed previously, will attach event listener to play preview
     const handlePreview = (url: string, divHover: HTMLElement | null) => {
         const audioPlayer = document.getElementById(url) as HTMLAudioElement;
         let hoverTimer: NodeJS.Timeout | null = null;
