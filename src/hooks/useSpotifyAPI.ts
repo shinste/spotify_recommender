@@ -45,6 +45,7 @@ const useSpotifyAPI = <T,>(authToken: string, query: string, params: object, set
       if (axios.isAxiosError(error)) {
         if (error.response && error.response.status === 401) {
           setAuthToken('');
+          window.localStorage.removeItem('token');
         }
       }
       setResponse({

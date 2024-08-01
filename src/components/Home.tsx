@@ -15,6 +15,7 @@ interface HomeProps {
     authToken: string
     setAuthToken: React.Dispatch<React.SetStateAction<string | null | undefined>>
 }
+
 // Home Component
 const Home: React.FC<HomeProps> = ({ authToken, setAuthToken }) => {
     const [selected, setSelected] = useState(CONSTANTS.SELECTED_ALL);
@@ -41,6 +42,7 @@ const Home: React.FC<HomeProps> = ({ authToken, setAuthToken }) => {
     // Custom Hook to add tracks and artists to the seed selection
     const { handleAdd, order, setOrder, allIds, setAllIds, positions, setPositions } = useAdd(setError);
 
+    // Allows search feature
     const handleSearch = (searchCategory: string, searchKey: string) => {
         if (searchCategory === 'track') {
             setTrackSearchKey(searchKey);

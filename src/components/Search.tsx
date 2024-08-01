@@ -1,4 +1,5 @@
 import { useState } from "react"
+
 interface DisplayProps {
     handleSearch: (searchCategory: string, searchKey: string) => void;
     setTrackSearchKey: React.Dispatch<React.SetStateAction<string>>
