@@ -15,7 +15,7 @@ const usePlaylists = (authToken: string, playlists: any[], playlistDivRef: React
         try {
             // Will only execute if a playlist has been chosen and it hasn't been fetched yet, or it is a playlist that must be updated
             if ((playlistIndex !== null && !Object.keys(playlistDisplay).includes(String(playlistIndex))) || update) {
-                const data = await getAPI(authToken, `playlists/${playlistIndex !== null && !update ? playlists[playlistIndex].id : update}`, { limit: 60 }, setAuthToken)
+                const data = await getAPI(authToken, `playlists/${playlistIndex !== null && !update ? playlists[playlistIndex].id : update}`, { limit: 50 }, setAuthToken)
                 // Update playlist because user added to this one
                 if (update) {
                     setPlaylistDisplay(Object.fromEntries(
