@@ -1,46 +1,28 @@
-# Getting Started with Create React App
+# Spotify Song Recommender Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+> Welcome to my Spotify Recommender repository!
 
-## Available Scripts
 
-In the project directory, you can run:
+## Motivation
 
-### `npm start`
+Like many others, my music taste changes from time to time. My answer to the question "What kind of music do you listen to" will almost never be the same. My volatile preference for music produces an obstacle for exploring new tracks and artists that fit the current phase I'm in. This is especially true because of Spotify's current recommendation system, which is simply providing recommendations while listening to large playlists and hoping you will like them. The problem with this is there is no support for a listener to actively look for recommendations that cater to that listener's taste at that moment, something like "I want to listen to something like X and Y". This project's main objective was to enable Spotify listeners to easily create those customizable song recommendations based on seed songs/artists.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Authorization
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+As you may have predicted, this application requires authorization from the user through Spotify to make Spotify API calls on behalf of the user's account account. The only changes that will be reflected on your account through this application is adding songs to playlists. 
 
-### `npm test`
+- **IMPORTANT!!!** Because this application is pending approval from Spotify, users who aren't specifically whitelisted cannot access the APIs for their accounts. There is a testing account provided in the Spotify login page for demonstration purpose, but if you would like to personally use this application, please contact me at stephenshin1@hotmail.com so I may whitelist your account.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Key Features
 
-### `npm run build`
+- **Song Recommendation**: Add up to 5 seed songs/artists that will influence the recommendations given to you.
+- **Song Preview**: Hover the track display image. If a preview exists for that track, it will play a small section of the song to make browsing easier.
+- **Category Display**: Provide a display of songs and artists with categories such as "Top Artists/Songs" to provide potential seed songs/artists.
+- **Search**: The user is able to search for songs/artists.
+- **Playlist Display**: Provide displays for up to 30 playlists, and up to 50 songs in each playlist.
+- **Adding to Playlist**: Ability to add any track to a playlist.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Deployed URL
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Netlify Deployment: https://master--spotifysongrecommender.netlify.app/
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
