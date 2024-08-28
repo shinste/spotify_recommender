@@ -2,7 +2,7 @@ import * as CONSTANTS from "../constants/loginConstants";
 
 const Login = () => {
   const CLIENT_ID = CONSTANTS.CLIENT_ID;
-  const REDIRECT_URI = CONSTANTS.REDIRECT_LOCAL;
+  const REDIRECT_URI = CONSTANTS.REDIRECT_PROJECT;
   const AUTH_ENDPOINT = CONSTANTS.AUTH_ENDPOINT;
   const TYPE = CONSTANTS.TYPE;
 
