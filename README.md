@@ -2,6 +2,8 @@
 
 > Welcome to my Spotify Recommender repository!
 
+# INACTIVE
+Spotify has decided to depreciate multiple public APIs that are depended on in this application. This will unfortunately disable the application and its functionalities.
 
 ## Motivation
 
